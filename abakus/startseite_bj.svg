@@ -1,0 +1,67 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
+    <defs>
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Mystery+Quest');
+            .cls-1{fill:#6dcaf3;}
+            .cls-2 {
+                font-size: 90px;
+                fill: #443418;
+                font-family: 'Mystery Quest', cursive;
+                animation: slide-in 1s forwards;
+                animation-delay: 2s;
+                transform: translate(-3000px, 40vh);
+            }
+            @keyframes slide-in {
+                100% { transform: translate(75px, 50vh); }
+            }
+            .cls-5{fill:#b5da8d;}
+            .cls-6{fill:#754c24;}
+            .cls-7{fill:#1b4617;}
+            .cls-8{fill:#50aa48;}
+            .cls-9{fill:#fff;}
+            #Logo {
+                transform: scale(2.1) translate(1400px, -999999px);
+                animation: rise 2s forwards;
+                animation-delay: 0.5s;
+            }
+            @keyframes rise {
+                0% { transform: translate(1400px, 1080px); }
+                100% { transform: translate(1400px, 80px); }
+            }
+            #Nachtschatten {
+                fill:rgba(3, 19, 56);
+                fill-opacity: 0.96;
+                animation: night-to-day 2s forwards;
+                animation-delay: 0.9s;
+            }
+            @keyframes night-to-day {
+                100% { fill-opacity: 0; }
+            }
+        </style>
+    </defs>
+    <title>startseite_bj</title>
+    <rect id="Himmel" class="cls-1" x="1" width="1921" height="1081"/>
+    <image id="Logo" width="286" height="254" xlink:href="logo_braun.png"></image>
+    <path id="BodenHinten" class="cls-5" d="M2,741c544,51,904,66,1099,30,466-89,401-150,612-81s207,69,207,69v321H0Z"/>
+        <g id="Baum">
+            <path id="Baumstamm" class="cls-6" d="M1324.28,909.35S1351,900,1373,849s0-232,0-232h78s-15,198,0,244c5,18,12,31,34,48l22,17S1352.55,948.69,1324.28,909.35Z"/>
+            <g id="Baumkrone">
+                <circle class="cls-7" cx="1292" cy="515" r="79"/>
+                <circle class="cls-7" cx="1336" cy="600" r="82"/>
+                <circle class="cls-7" cx="1489" cy="590" r="83"/>
+                <circle class="cls-7" cx="1375" cy="465" r="75"/>
+                <circle class="cls-7" cx="1435" cy="537" r="72"/>
+                <circle class="cls-7" cx="1455.5" cy="418.5" r="80.5"/>
+                <circle class="cls-7" cx="1494" cy="507" r="78"/>
+                <circle class="cls-7" cx="1338" cy="416" r="78"/>
+                <circle class="cls-7" cx="1534" cy="482" r="87"/>
+            </g>
+        </g>
+    <path id="BodenVorne" class="cls-8" d="M2,868c530,89,848-98,1069-29s363,106,486,80,315-96,365-70v231H2Z"/>
+    <path id="WolkeLinks" class="cls-9" d="M203.68,131.34c0-52.27,115.4-59.34,111-4.24,48.27-41.68,101-45.21,117.62-5.65,46.6-3.53,28.3,53,2.77,57.22,54.93,17.66,5,90.42-32.18,52.27,17.2,61.46-17,115.29-73.79,62.87C278,344,205.9,305.11,217,250c-74.9,1.41-55.48-77-35.51-77.7-33.29-22.6-1.11-83.35,22.19-41"/>
+    <path id="WolkeRechts" class="cls-9" d="M1053.67,240.54C1105,275,1027,346,957,291c2.13,36.19-62,82-95,17,9,88-91,79-73,41-61.48,25.83-91.3-12.17-58.27-28-78.43,14.37-31.45-64.08,28.8-54.52-39.87-36.67-8.76-93.36,81.65-83.06,54.66-62.36,161.93-69.7,162.15-23.61,100-38.37,95.42,29,68.85,39.51,50.79.05,24.31,60.81-18.52,41.22"/>
+    <text class="cls-2">
+        <tspan>Mehr als ein Bio-Laden!</tspan>
+    </text>
+    <rect id="Nachtschatten" x="0.02" width="1921" height="1081"/>
+</svg>
