@@ -67,7 +67,7 @@ html, body {
     color: #6dcaf3 !important;
 }
 
-.btn-teal:active, .btn-teal:focus, .btn-teal:visited {
+.btn-teal:active, .btn-teal:focus {
     background-color: #fff !important;
     color: #6dcaf3 !important;
     box-shadow: none !important;
@@ -83,7 +83,7 @@ html, body {
     color: #fff !important;
 }
 
-.btn-black:active, .btn-black:focus, .btn-black:visited {
+.btn-black:active, .btn-black:focus {
     background-color: #000 !important;
     color: #fff !important;
     box-shadow: none !important;
@@ -99,7 +99,7 @@ html, body {
     color: #50aa48 !important;
 }
 
-.btn-green:active, .btn-green:focus, .btn-green:visited {
+.btn-green:active, .btn-green:focus {
     background-color: #fff !important;
     color: #50aa48 !important;
     box-shadow: none !important;
