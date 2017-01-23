@@ -1,0 +1,118 @@
+
+/* Farben:
+
+Himmel:         #6dcaf3
+Gras vorne:     #50aa48
+Gras hinten:    #b5da8d
+Baumkrone:      #1b4617
+Baumstamm:      #754c24
+Abakusgelb:     #fcee21
+Abakusbraun:    #443418
+
+*/
+
+html, body {
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#main-nav {
+    background-color: #fff;
+    z-index: 9999;
+    box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.37);
+}
+
+#main-content {
+    min-height: 100vh;
+}
+
+.main-content-heading {
+    margin-top: 2em;
+    text-align: center;
+}
+
+.main-content-paragraph {
+    padding: 2em;
+    text-align: justify;
+}
+
+.main-content-list {
+    padding: 0 2em;
+}
+
+.button-container {
+    text-align: center;
+    margin-bottom: 8em;
+}
+
+.teal-col {
+    background: #6dcaf3;
+    color: #fff;
+}
+
+.green-col {
+    background: #50aa48;
+    color: #fff;
+}
+
+.btn-teal {
+    border-color: #fff !important;
+    color: #fff !important;
+}
+
+.btn-teal:hover {
+    background-color: #fff !important;
+    color: #6dcaf3 !important;
+}
+
+.btn-teal:active, .btn-teal:focus, .btn-teal:visited {
+    background-color: #fff !important;
+    color: #6dcaf3 !important;
+    box-shadow: none !important;
+}
+
+.btn-black {
+    border-color: #000 !important;
+    color: #000 !important;
+}
+
+.btn-black:hover {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+.btn-black:active, .btn-black:focus, .btn-black:visited {
+    background-color: #000 !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+.btn-green {
+    border-color: #fff !important;
+    color: #fff !important;
+}
+
+.btn-green:hover {
+    background-color: #fff !important;
+    color: #50aa48 !important;
+}
+
+.btn-green:active, .btn-green:focus, .btn-green:visited {
+    background-color: #fff !important;
+    color: #50aa48 !important;
+    box-shadow: none !important;
+}
+
+.top-margin {
+    margin-top: 56px;
+}
+
+.no-pad-bottom {
+    padding-bottom: 0;
+}
+
+.no-pad-top {
+    padding-top: 0;
+}
