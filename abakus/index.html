@@ -22,20 +22,39 @@
 
             */
 
+            * {padding: 0; margin: 0}
+
             #main-nav {
                 animation: show-nav 0.4s forwards;
-                animation-delay: 3s;
+                animation-delay: 1s;
                 margin-top: -56px;
             }
             @keyframes show-nav {
                 100% { margin-top: 0;}
             }
 
-            .banner-container {
-                max-width: 100vw;
-                height: 100vh;
-                overflow: hidden;
+            #banner-wrapper {
+                margin-top: 56px;
+                height: calc(100vh - 56px);
             }
+
+            .newsletter-list a {
+                color: #fff;
+            }
+
+            .blockquote {
+                font-size: 1rem !important;
+            }
+
+            .blockquote a {
+                color: #fff !important;
+            }
+
+            .older-link {
+                color: #fff;
+                margin-bottom: 32px;
+            }
+
 
         </style>
         
@@ -47,6 +66,9 @@
         <script src="bootstrap-4.0.0-alpha.6-dist/js/jquery-3.1.1.min.js"></script>
         <script src="tether-1.3.3/js/tether.min.js"></script>
         <script src="bootstrap-4.0.0-alpha.6-dist/js/bootstrap.min.js"></script>
+        <script src="pixi/pixi.min.js"></script>
+
+        <script src="banner.js"></script>
 
     </head>
 
@@ -65,7 +87,7 @@
                         <a class="nav-link" href="index.html">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="laden.html">Zum Laden</a>
+                        <a class="nav-link" href="laden.html">Der Laden</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="mitmachen.html">Mitmachen</a>
@@ -74,7 +96,7 @@
                         <a class="nav-link" href="leitbild.html">Leitbild</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="ueberuns.html">Über uns</a>
+                        <a class="nav-link" href="service.html">Service</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="kontakt.html">Kontakt</a>
@@ -89,15 +111,91 @@
             </div>
         </nav>
 
-        <div class="banner-container">
-            <object data="startseite_bj.svg" id="banner">
-                Ihr Browser kann leider kein svg darstellen!  
-            </object>
-        </div>
+
+        <div id="banner-wrapper"></div>
 
         <div class="container-fluid" id="main-content">
-            <div class="row main-content-row">
-                <div class="col-md-6 main-content-col teal-col">
+            <div class="row">
+
+                <div class="col-md-6 aktuelles-col teal-col main-content-col">
+
+                    <h1 class="display-4 main-content-heading">Aktuelles</h1>
+                    <p class="main-content-paragraph">
+                        Hier finden sich aktuelle Informationen, die das Geschehen rund um Abakus betreffen. Außerdem verewigen wir unsere Newsletter hier, falls mal ein Rezept nachgeschlagen werden muss oder Ähnliches.
+                    </p>
+                    <p class="h5 indent">Neuigkeiten</p>
+                    <div class="indent">
+                        <blockquote class="blockquote">
+                            <p class="mb-0">Hier steht eine weitere tolle Neuigkeit, an der wir euch unbedinigt teilhaben lassen müssen. <a href="#">Weiterlesen ...</a></p>
+                            <footer class="blockquote-footer">Abakus Team <cite title="Source Title">16. April 2017</cite></footer>
+                        </blockquote>
+                        <blockquote class="blockquote">
+                            <p class="mb-0">Mit dem Frühjahrsputz bringen wir auch unsere Website wieder auf Hochglanz, so dass wir euch bald mit den neuesten Abakus-Informationen, Fotos und vielem mehr versorgen können. <a href="#">Weiterlesen ...</a></p>
+                            <footer class="blockquote-footer">Abakus Team <cite title="Source Title">15. April 2017</cite></footer>
+                        </blockquote>
+                    </div>
+                    <p class="h5 indent">Newsletter</p>
+                    <ul class="indent newsletter-list list-unstyled">
+                        <li><a href="#">14. April bis 20. April</a></li>
+                        <li><a href="#">07. April bis 13. April</a></li>
+                        <li><a href="#">31. März bis 06. April</a></li>
+                        <li><a href="#">17. März bis 23. März</a></li>
+                    </ul>
+                    
+
+
+                </div>
+
+
+                <div class="col-md-6">
+                    <div class="row">
+
+                        <div class="col-md-12 main-content-col">
+                            <h1 class="display-4 main-content-heading">Wie es funktioniert</h1>
+                            <p class="main-content-paragraph">
+                                Abakus ist ein Naturkost-Mitgliederladen, wir wirtschaften nach dem Prinzip einer Einkaufs-gemeinschaft.
+                                95 Prozent der Kundinnen und Kunden sind Mitglieder vom ABAKUS, sie zahlen einen monatlichen Beitrag. Mit diesem Mitgliedsbeitrag und einer einmaligen Pauschale werden Ladenmiete, Strom, Steuern, Gehälter und so weiter finanziert.
+                            </p>
+                            <div class="button-container">
+                                <a role="button" class="btn btn-outline-primary btn-black" href="mitmachen.html">Mehr über die Funktionsweise</a>
+                            </div>
+                        </div>
+
+                    <div class="col-md-12 main-content-col green-col">
+                        <h1 class="display-4 main-content-heading">Mitmachen</h1>
+                        <p class="main-content-paragraph no-pad-bottom">
+                            Um unseren Service anbieten zu können, berechnen wir einen geringen, monatlichen Beitrag, den sich jeder leisten kann. Er ist nicht nur abhängig von deinem Gehalt, sondern auch für Großfamilien, Wohngemeinschaften und Ähnliches verhandelbar.
+                        </p>
+                        <dl class="row main-content-list">
+                            <dt class="col-sm-3">14€­ bis 17­€</dt>
+                            <dd class="col-sm-9">für die erste Person eines Haushaltes bzw. WG</dd>
+
+                            <dt class="col-sm-3">9€­ bis 12€­</dt>
+                            <dd class="col-sm-9">für jede weitere Person</dd>
+                            
+                            <dt class="col-sm-3">5€</dt>
+                            <dd class="col-sm-9">für Kinder zwischen 2 und 18 Jahren</dd>
+                        </dl>
+                        <div class="button-container">
+                            <a role="button" class="btn btn-outline-primary btn-green" href="mitmachen.html">Mitmachen</a>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-6 main-content-col lgreen-col">
+                    <h1 class="display-4 main-content-heading">Wofür wir stehen</h1>
+                    <p class="main-content-paragraph">
+                        Wir bieten als Naturkostladen unseren Mitgliedern ein umfassendes Sortiment an gesunden und schmackhaften Produkten aus kontrolliert ökologischen Anbau zu erschwinglichen Preisen.
+                        Gemeinsam unterstützen wir als Verbrauchergemeinschaft die zukunftsweisende ökologische Produktion von Lebensmitteln und Verbrauchsprodukten. 
+                    </p>
+                    <div class="button-container">
+                        <a role="button" class="btn btn-outline-primary btn-lgreen" href="leitbild.html">Wofür wir noch stehen</a>
+                    </div>
+                </div>
+
+                <div class="col-md-6 main-content-col">
                     <h1 class="display-4 main-content-heading">Wer wir sind</h1>
                     <p class="main-content-paragraph">
                         Wir, das sind Lothar Zumfelde und eine gut gelaunte Ladencrew.
@@ -105,54 +203,12 @@
                         Habt ihr Ideen für Verbesserungen und Veränderungen? So lasst es uns wissen, wir sind jederzeit dafür offen und interessiert.
                     </p>
                     <div class="button-container">
-                        <a role="button" class="btn btn-outline-primary btn-teal" href="ueberuns.html">Mehr über uns</a>
+                        <a role="button" class="btn btn-outline-primary btn-black" href="ueberuns.html">Mehr über uns</a>
                     </div>
                 </div>
-                <div class="col-md-6 main-content-col">
-                    <h1 class="display-4 main-content-heading">Wofür wir stehen</h1>
-                    <p class="main-content-paragraph">
-                        Wir bieten als Naturkostladen unseren Mitgliedern ein umfassendes Sortiment an gesunden und schmackhaften Produkten aus kontrolliert ökologischen Anbau zu erschwinglichen Preisen.
-                        Gemeinsam unterstützen wir als Verbrauchergemeinschaft die zukunftsweisende ökologische Produktion von Lebensmitteln und Verbrauchsprodukten. 
-                    </p>
-                    <div class="button-container">
-                        <a role="button" class="btn btn-outline-primary btn-black" href="leitbild.html">Wofür wir noch stehen</a>
-                    </div>
-                </div>
-            </div>
-            <div class="row main-content-row">
-                <div class="col-md-6 main-content-col">
-                    <h1 class="display-4 main-content-heading">Wie es funktioniert</h1>
-                    <p class="main-content-paragraph">
-                        Abakus ist ein Naturkost-Mitgliederladen, wir wirtschaften nach dem Prinzip einer Einkaufs-gemeinschaft.
-                        95 Prozent der Kundinnen und Kunden sind Mitglieder vom ABAKUS, sie zahlen einen monatlichen Beitrag. Mit diesem Mitgliedsbeitrag und einer einmaligen Pauschale werden Ladenmiete, Strom, Steuern, Gehälter und so weiter finanziert.
-                    </p>
-                    <div class="button-container">
-                        <a role="button" class="btn btn-outline-primary btn-black" href="mitmachen.html">Mehr über die Funktionsweise</a>
-                    </div>
-                </div>
-                <div class="col-md-6 main-content-col green-col">
-                    <h1 class="display-4 main-content-heading">Was es kostet</h1>
-                    <p class="main-content-paragraph no-pad-bottom">
-                        Die monatlichen Beiträge für den Verein sind abhängig vom Gehalt. Außerdem ist der Beitrag für Großfamilien, Wohngemeinschaften und Ähnliches verhandelbar.
-                    </p>
-                    <dl class="row main-content-list">
-                        <dt class="col-sm-3">14€­ bis 17­€</dt>
-                        <dd class="col-sm-9">für die erste Person eines Haushaltes bzw. WG</dd>
 
-                        <dt class="col-sm-3">9€­ bis 12€­</dt>
-                        <dd class="col-sm-9"> für jede weitere Person</dd>
-                        
-                        <dt class="col-sm-3">5€</dt>
-                        <dd class="col-sm-9"> für Kinder zwischen 2 und 18 Jahren</dd>
-                    </dl>
-                    <div class="button-container">
-                        <a role="button" class="btn btn-outline-primary btn-green" href="mitmachen.html">Mitmachen</a>
-                    </div>
-                </div>
             </div>
         </div>
-
-
 
     </body>
 

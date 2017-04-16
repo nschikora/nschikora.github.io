@@ -18,6 +18,13 @@ html, body {
     padding: 0;
 }
 
+canvas {
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+}
+
 #main-nav {
     background-color: #fff;
     z-index: 9999;
@@ -28,13 +35,35 @@ html, body {
     min-height: 100vh;
 }
 
+.img-col {
+    background-position: center;
+    padding: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    min-height: 400px;
+}
+
+.col-img {
+    width: 100%;
+    height: 100%;
+}
+
+.indent {
+    padding-left: 32px;
+}
+
 .main-content-heading {
-    margin-top: 2em;
     text-align: center;
 }
 
+.main-content-col {
+    padding-top: 5em;
+    padding-bottom: 5em;
+    color: rgba(0, 0, 0, 0.65);
+}
+
 .main-content-paragraph {
-    padding: 2em;
+    padding: 32px;
     text-align: justify;
 }
 
@@ -44,7 +73,6 @@ html, body {
 
 .button-container {
     text-align: center;
-    margin-bottom: 8em;
 }
 
 .teal-col {
@@ -54,8 +82,30 @@ html, body {
 
 .green-col {
     background: #50aa48;
-    color: #fff;
+    color: rgba(255, 255, 255, .8) !important;
 }
+
+.lgreen-col {
+    background: #b5da8d;
+    color: rgba(0, 0, 0, 0.64) !important;
+}
+
+.btn-lgreen {
+    border-color: rgba(0, 0, 0, 0.64) !important;
+    color: rgba(0, 0, 0, 0.64) !important;
+}
+
+.btn-lgreen:hover {
+    background-color: rgba(0, 0, 0, 0.64) !important;
+    color: #b5da8d !important;
+}
+
+.btn-lgreen:active, .btn-lgreen:focus {
+    background-color: rgba(0, 0, 0, 0.64) !important;
+    color: #b5da8d !important;
+    box-shadow: none !important;
+}
+
 
 .btn-teal {
     border-color: #fff !important;
@@ -74,33 +124,33 @@ html, body {
 }
 
 .btn-black {
-    border-color: #000 !important;
-    color: #000 !important;
+    border-color: rgba(0, 0, 0, 0.65) !important;
+    color: rgba(0, 0, 0, 0.65) !important;
 }
 
 .btn-black:hover {
-    background-color: #000 !important;
+    background-color: rgba(0, 0, 0, 0.65) !important;
     color: #fff !important;
 }
 
 .btn-black:active, .btn-black:focus {
-    background-color: #000 !important;
+    background-color: rgba(0, 0, 0, 0.65) !important;
     color: #fff !important;
     box-shadow: none !important;
 }
 
 .btn-green {
-    border-color: #fff !important;
-    color: #fff !important;
+    border-color: rgba(255, 255, 255, .8) !important;
+    color: rgba(255, 255, 255, .8) !important;
 }
 
 .btn-green:hover {
-    background-color: #fff !important;
+    background-color: rgba(255, 255, 255, .8) !important;
     color: #50aa48 !important;
 }
 
 .btn-green:active, .btn-green:focus {
-    background-color: #fff !important;
+    background-color: rgba(255, 255, 255, .8) !important;
     color: #50aa48 !important;
     box-shadow: none !important;
 }
