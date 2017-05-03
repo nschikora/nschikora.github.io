@@ -9,12 +9,38 @@ var sky
 var logo
 var slogan
 
+var screenSizes = {
+    fourk: 2560,
+    largeLaptop: 1440,
+    laptop: 1024,
+    tablet: 768,
+    mobile: 425
+}
+
 function update() {
     app.renderer.resize(document.body.clientWidth, window.innerHeight);
     draw();
 }
 
 function draw() {
+
+    var screenSize;
+
+    if( app.renderer.width >= screenSizes.fourk )
+        screenSize = screenSizes.fourk;
+
+    if( app.renderer.width <= screenSizes.largeLaptop )
+        screenSize = screenSizes.largeLaptop;
+
+    if( app.renderer.width <= screenSizes.laptop )
+        screenSize = screenSizes.laptop;
+
+    if( app.renderer.width <= screenSizes.tablet )
+        screenSize = screenSizes.tablet;
+
+    if( app.renderer.width <= screenSizes.mobile )
+        screenSize = screenSizes.mobile;
+
     //Place the sky in the top left corner
     sky.x = 0;
     sky.y = 0;
@@ -41,7 +67,7 @@ function draw() {
     //Setup the position of the tree
     var treeInitialRatio = tree.width / tree.height;
     tree.x = app.renderer.width * 0.55;
-    tree.height = app.renderer.height * 0.55;
+    tree.height = app.renderer.height * 0.45;
     tree.y = app.renderer.height - tree.height - groundBack.height*0.3;
     tree.width = tree.height * treeInitialRatio;
 
@@ -69,9 +95,9 @@ function draw() {
     cloud2.y = app.renderer.height * 0.15;
 
     var sloganInitialRatio = slogan.height / slogan.width;
-    slogan.width = tree.x - 50;
+    slogan.width = screenSize <= screenSizes.tablet ? app.renderer.width - 50 : tree.x - 50;
     slogan.height = slogan.width * sloganInitialRatio;
-    slogan.y = app.renderer.height * 0.5;
+    slogan.y = screenSize <= screenSizes.tablet ? app.renderer.height * 0.35 : app.renderer.height * 0.5;
     slogan.x = -slogan.width;
 }
 
