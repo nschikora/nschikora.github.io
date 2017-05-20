@@ -86,12 +86,14 @@
                 padding-right: 15px;
             }
 
-            @media(min-width: 1200px) {
+            @media(min-width: 768px) {
                 #aktuelles-wrapper {
-                    padding-right: 10px;
+                    max-width: calc(50% - 10px);
+                    margin-right: 10px;
                 }
                 #info-wrapper {
-                    padding-left: 10px;
+                    max-width: calc(50% - 10px);
+                    margin-left: 10px;
                 }
                 #banner-container {
                     margin-bottom: 20px;
@@ -159,7 +161,7 @@
 
 
         <div class="container" id="banner-container">
-            <div class="row justify-content-md-center">
+            <div class="row justify-content-md-center shadowed">
                 <div class="col-lg-12 no-pad">
                     <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                         <div class="carousel-inner" role="listbox">
@@ -176,7 +178,7 @@
         <div class="container" id="main-content">
             <div class="row">
 
-                <div class="col-md-6 no-pad" id="aktuelles-wrapper">
+                <div class="col-md-6 no-pad shadowed" id="aktuelles-wrapper">
                     <div class="aktuelles-col lgreen-col main-content-col">
                         <h1 class="display-4 main-content-heading">Aktuelles</h1>
                         <p class="main-content-paragraph">
@@ -200,7 +202,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 no-pad" id="info-wrapper">
+                <div class="col-md-6 no-pad shadowed" id="info-wrapper">
                     <div class="main-content-col green-col" id="info-col">
                         <h1 class="display-4 main-content-heading">Wie Abakus funktioniert</h1>
                         <p class="main-content-paragraph">
