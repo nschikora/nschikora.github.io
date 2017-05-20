@@ -11,6 +11,23 @@ Abakusbraun:    #443418
 
 */
 
+/* Neu */
+/*
+
+Primary Green #66bb6a rgba(0, 0, 0, 0.63)
+P — Light Green #98ee99 rgba(0, 0, 0, 0.56)
+P — Dark Green #338a3e rgba(0, 0, 0, 0.90)
+
+Primary Light Green #c5e1a5 rgba(0, 0, 0, 0.56)
+P — Light Light Green #f8ffd7 rgba(0, 0, 0, 0.54)
+P — Dark Light Green #94af76 rgba(0, 0, 0, 0.64)
+
+Secondary Light Blue #81d4fa rgba(0, 0, 0, 0.58)
+S — Light Light Blue #b6ffff rgba(0, 0, 0, 0.55)
+S — Dark Light Blue #4ba3c7 rgba(0, 0, 0, 0.67)
+
+*/
+
 html, body {
     left: 0;
     top: 0;
@@ -58,7 +75,7 @@ canvas {
 
 .main-content-col {
     padding-top: 5em;
-    padding-bottom: 5em;
+    padding-bottom: 3em;
     color: rgba(0, 0, 0, 0.65);
 }
 
@@ -81,28 +98,28 @@ canvas {
 }
 
 .green-col {
-    background: #50aa48;
-    color: rgba(255, 255, 255, .8) !important;
+    background: #66bb6a;
+    color: rgba(0, 0, 0, 0.63) !important;
 }
 
 .lgreen-col {
-    background: #b5da8d;
-    color: rgba(0, 0, 0, 0.64) !important;
+    background: #c5e1a5;
+    color: rgba(0, 0, 0, 0.56) !important;
 }
 
 .btn-lgreen {
-    border-color: rgba(0, 0, 0, 0.64) !important;
-    color: rgba(0, 0, 0, 0.64) !important;
+    border-color: rgba(0, 0, 0, 0.56) !important;
+    color: rgba(0, 0, 0, 0.56) !important;
 }
 
 .btn-lgreen:hover {
-    background-color: rgba(0, 0, 0, 0.64) !important;
-    color: #b5da8d !important;
+    background-color: rgba(0, 0, 0, 0.56) !important;
+    color: #c5e1a5 !important;
 }
 
 .btn-lgreen:active, .btn-lgreen:focus {
-    background-color: rgba(0, 0, 0, 0.64) !important;
-    color: #b5da8d !important;
+    background-color: rgba(0, 0, 0, 0.56) !important;
+    color: #c5e1a5 !important;
     box-shadow: none !important;
 }
 
@@ -140,18 +157,18 @@ canvas {
 }
 
 .btn-green {
-    border-color: rgba(255, 255, 255, .8) !important;
-    color: rgba(255, 255, 255, .8) !important;
+    border-color: rgba(0, 0, 0, 0.63) !important;
+    color: rgba(0, 0, 0, 0.63) !important;
 }
 
 .btn-green:hover {
-    background-color: rgba(255, 255, 255, .8) !important;
-    color: #50aa48 !important;
+    background-color: rgba(0, 0, 0, 0.63) !important;
+    color: #66bb6a !important;
 }
 
 .btn-green:active, .btn-green:focus {
-    background-color: rgba(255, 255, 255, .8) !important;
-    color: #50aa48 !important;
+    background-color: rgba(0, 0, 0, 0.63) !important;
+    color: #66bb6a !important;
     box-shadow: none !important;
 }
 
@@ -165,6 +182,10 @@ canvas {
 
 .no-pad-top {
     padding-top: 0;
+}
+
+.no-pad {
+    padding: 0;
 }
 
 @media (max-width: 450px) {

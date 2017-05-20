@@ -23,7 +23,8 @@ var screenSizes = {
 }
 
 function update() {
-    app.renderer.resize(document.body.clientWidth, window.innerHeight);
+    var bannerWrapper = document.querySelector("#banner-wrapper");
+    app.renderer.resize(bannerWrapper.clientWidth, bannerWrapper.clientHeight);
     draw();
 }
 
@@ -57,7 +58,7 @@ function draw() {
     var groundBackInitialRatio = groundBack.height / groundBack.width;
     groundBack.width = app.renderer.width;
     groundBack.height = app.renderer.width * groundBackInitialRatio;
-    groundBack.x = 0;
+    groundBack.x = -1;
     groundBack.y = app.renderer.height - groundBack.height;
 
 
@@ -70,11 +71,17 @@ function draw() {
 
 
     //Setup the position of the tree
+    /*
     var treeInitialRatio = tree.width / tree.height;
     tree.x = app.renderer.width * 0.55;
     tree.height = app.renderer.height * 0.45;
     tree.y = app.renderer.height - tree.height - groundBack.height*0.3;
     tree.width = tree.height * treeInitialRatio;
+    */
+    tree.scale.set(0.25);
+    console.log(tree)
+    tree.x = app.renderer.width * 0.6;
+    tree.y = app.renderer.height - tree.height - groundBack.height*0.3;
 
 
     //Place the ground in the front
@@ -107,26 +114,28 @@ function draw() {
 }
 
 function init() {
-    app = new PIXI.Application(800, 600, {transparent: true});
+    app = new PIXI.Application(1920, 1080, {transparent: true});
     app.renderer.autoResize = true;
     app.renderer.view.style.position = "absolute";
     app.renderer.view.style.display = "block";
     app.renderer.autoResize = true;
-    app.renderer.resize(document.body.clientWidth, window.innerHeight);
+
+    var bannerWrapper = document.querySelector("#banner-wrapper");
+    app.renderer.resize(bannerWrapper.clientWidth, bannerWrapper.clientHeight);
 
     var bannerWrapper = document.querySelector('#banner-wrapper');
     bannerWrapper.appendChild(app.view);
 
 
     PIXI.loader.add([
-        {name: 'tree', url: 'img/Baum.png'},
-        {name: 'cloud1', url: 'img/Wolke1.png'},
-        {name: 'cloud2', url: 'img/Wolke2.png'},
-        {name: 'groundFront', url: 'img/BodenVorne.png'},
-        {name: 'groundBack', url: 'img/BodenHinten.png'},
-        {name: 'sky', url: 'img/Himmel.png'},
+        {name: 'tree', url: 'img/Baum.svg'},
+        {name: 'cloud1', url: 'img/Wolke1.svg'},
+        {name: 'cloud2', url: 'img/Wolke2.svg'},
+        {name: 'groundFront', url: 'img/BodenVorne.svg'},
+        {name: 'groundBack', url: 'img/BodenHinten.svg'},
+        {name: 'sky', url: 'img/Himmel.svg'},
         {name: 'logo', url: 'logo.png'},
-        {name: 'slogan', url: 'img/Spruch.png'}
+        {name: 'slogan', url: 'img/Spruch.svg'}
     ]).load(function(loader, resources) {
         // This creates a texture
         tree = new PIXI.Sprite(resources.tree.texture);

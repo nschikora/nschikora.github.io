@@ -28,6 +28,7 @@
 
             * {padding: 0; margin: 0}
 
+            /*
             #main-nav {
                 animation: show-nav 0.4s forwards;
                 animation-delay: 1s;
@@ -36,18 +37,35 @@
             @keyframes show-nav {
                 100% { margin-top: 0;}
             }
+            */
 
+            /*
             #banner-wrapper {
                 margin-top: 56px;
                 height: calc(100vh - 56px);
             }
+            */
+
+            #banner-wrapper {
+                width: 100%;
+                height: 432px;
+            }
+
+            #banner-container {
+                margin-top: 53px;
+            }
+
 
             #banner-wrapper > canvas {
                 touch-action: initial !important;
             }
 
+            blockquote {
+                border-left: .25rem solid rgba(0, 0, 0, 0.64) !important;
+            }
+
             .newsletter-list a {
-                color: #fff;
+                color: rgba(0, 0, 0, 0.64) !important;
             }
 
             .blockquote {
@@ -55,12 +73,32 @@
             }
 
             .blockquote a {
-                color: #fff !important;
+                color: rgba(0, 0, 0, 0.64) !important;
             }
 
             .older-link {
-                color: #fff;
+                color: rgba(0, 0, 0, 0.64) !important;
                 margin-bottom: 32px;
+            }
+
+            #info-col, .aktuelles-col {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            @media(min-width: 1200px) {
+                #aktuelles-wrapper {
+                    padding-right: 10px;
+                }
+                #info-wrapper {
+                    padding-left: 10px;
+                }
+                #banner-container {
+                    margin-bottom: 20px;
+                }
+                #info-col {
+                    height: 100%;
+                }
             }
 
 
@@ -101,7 +139,7 @@
                         <a class="nav-link" href="mitmachen.html">Mitmachen</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="leitbild.html">Leitbild</a>
+                        <a class="nav-link" href="leitbild.html">Unser Selbstverständnis</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="service.html">Service</a>
@@ -120,82 +158,60 @@
         </nav>
 
 
-        <div id="banner-wrapper"></div>
-
-        <div class="container-fluid" id="main-content">
-            <div class="row">
-
-                <div class="col-md-6 aktuelles-col teal-col main-content-col">
-
-                    <h1 class="display-4 main-content-heading">Aktuelles</h1>
-                    <p class="main-content-paragraph">
-                        Aktuelle Informationen rund um Abakus und unsere Newsletter:
-                    </p>
-                    <p class="h5 indent">Neuigkeiten</p>
-                    <div class="indent">
-                        <blockquote class="blockquote">
-                            <p class="mb-0">Hier steht eine weitere tolle Neuigkeit, an der wir euch unbedinigt teilhaben lassen müssen. <a href="#">Weiterlesen ...</a></p>
-                            <footer class="blockquote-footer">Abakus Team <cite title="Source Title">16. April 2017</cite></footer>
-                        </blockquote>
-                        <blockquote class="blockquote">
-                            <p class="mb-0">Unser Newsletter, gültig vom 14. April bis zum 20. April, ist da: <a href="#">Lesen!</a></p>
-                            <footer class="blockquote-footer">Abakus Team <cite title="Source Title">15. April 2017</cite></footer>
-                        </blockquote>
-                        <blockquote class="blockquote">
-                            <p class="mb-0">Mit dem Frühjahrsputz bringen wir auch unsere Website wieder auf Hochglanz, so dass wir euch bald mit den neuesten Abakus-Informationen, Fotos und vielem mehr versorgen können. <a href="#">Weiterlesen ...</a></p>
-                            <footer class="blockquote-footer">Abakus Team <cite title="Source Title">15. April 2017</cite></footer>
-                        </blockquote>
-                    </div>
-
-                </div>
-
-
-                <div class="col-md-6">
-                    <div class="row">
-
-                        <div class="col-md-12 main-content-col">
-                            <h1 class="display-4 main-content-heading">Wie es funktioniert</h1>
-                            <p class="main-content-paragraph">
-                                Abakus ist ein Naturkost-Mitgliederladen, wir wirtschaften nach dem Prinzip einer Einkaufs-gemeinschaft. Ihr zahlt einen monatlichen Beitrag, mit dem wir Ladenmiete, Strom, Steuern, Gehälter und so weiter finanzieren. Dafür gibt's einen saftigen Rabatt auf unsere Produkte.
-                            </p>
-                            <div class="button-container">
-                                <a role="button" class="btn btn-outline-primary btn-black" href="mitmachen.html">Mehr erfahren</a>
+        <div class="container" id="banner-container">
+            <div class="row justify-content-md-center">
+                <div class="col-lg-12 no-pad">
+                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner" role="listbox">
+                            <div class="carousel-item active">
+                                <div id="banner-wrapper"></div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="col-md-12 main-content-col green-col">
-                        <h1 class="display-4 main-content-heading">Mitmachen</h1>
+        
+        <div class="container" id="main-content">
+            <div class="row">
+
+                <div class="col-md-6 no-pad" id="aktuelles-wrapper">
+                    <div class="aktuelles-col lgreen-col main-content-col">
+                        <h1 class="display-4 main-content-heading">Aktuelles</h1>
                         <p class="main-content-paragraph">
-                            Mitmachen ist einfach und unkompliziert; kommt im Laden vorbei oder nehmt per Email Kontakt mit uns auf, dann könnt Ihr die Mitgliedschaft beantragen.
+                            Aktuelle Informationen rund um Abakus und unsere Newsletter:
                         </p>
-                        <div class="button-container">
-                            <a role="button" class="btn btn-outline-primary btn-green" href="mitmachen.html">Mehr erfahren</a>
+                        <p class="h5 indent">Neuigkeiten</p>
+                        <div class="indent">
+                            <blockquote class="blockquote">
+                                <p class="mb-0">Hier steht eine weitere tolle Neuigkeit, an der wir euch unbedinigt teilhaben lassen müssen. <a href="#">Weiterlesen ...</a></p>
+                                <footer class="blockquote-footer">Abakus Team <cite title="Source Title">16. April 2017</cite></footer>
+                            </blockquote>
+                            <blockquote class="blockquote">
+                                <p class="mb-0">Unser Newsletter, gültig vom 14. April bis zum 20. April, ist da: <a href="#">Lesen!</a></p>
+                                <footer class="blockquote-footer">Abakus Team <cite title="Source Title">15. April 2017</cite></footer>
+                            </blockquote>
+                            <blockquote class="blockquote">
+                                <p class="mb-0">Mit dem Frühjahrsputz bringen wir auch unsere Website wieder auf Hochglanz, so dass wir euch bald mit den neuesten Abakus-Informationen, Fotos und vielem mehr versorgen können. <a href="#">Weiterlesen ...</a></p>
+                                <footer class="blockquote-footer">Abakus Team <cite title="Source Title">15. April 2017</cite></footer>
+                            </blockquote>
                         </div>
                     </div>
-
-                    </div>
                 </div>
 
-                <div class="col-md-6 main-content-col lgreen-col">
-                    <h1 class="display-4 main-content-heading">Wofür wir stehen</h1>
-                    <p class="main-content-paragraph">
-                        Wir bieten als Naturkostladen unseren Mitgliedern ein umfassendes Sortiment an gesunden und schmackhaften Produkten aus kontrolliert ökologischen Anbau zu erschwinglichen Preisen.
-                        Gemeinsam unterstützen wir als Verbrauchergemeinschaft die zukunftsweisende ökologische Produktion von Lebensmitteln und Verbrauchsprodukten. 
-                    </p>
-                    <div class="button-container">
-                        <a role="button" class="btn btn-outline-primary btn-lgreen" href="leitbild.html">Mehr erfahren</a>
-                    </div>
-                </div>
-
-                <div class="col-md-6 main-content-col">
-                    <h1 class="display-4 main-content-heading">Wer wir sind</h1>
-                    <p class="main-content-paragraph">
-                        Wir, das sind Lothar Zumfelde und eine gut gelaunte Ladencrew.
-                        Wir machen für Euch den Service, kaufen ein, beraten, bedienen, bestellen, kassieren, verwalten.
-                        Habt ihr Ideen für Verbesserungen und Veränderungen? So lasst es uns wissen, wir sind jederzeit dafür offen und interessiert.
-                    </p>
-                    <div class="button-container">
-                        <a role="button" class="btn btn-outline-primary btn-black" href="service.html">Mehr erfahren</a>
+                <div class="col-md-6 no-pad" id="info-wrapper">
+                    <div class="main-content-col green-col" id="info-col">
+                        <h1 class="display-4 main-content-heading">Wie Abakus funktioniert</h1>
+                        <p class="main-content-paragraph">
+                            Abakus ist ein Naturkost-Mitgliederladen, wir wirtschaften nach dem Prinzip einer Einkaufs-gemeinschaft. Ihr zahlt einen monatlichen Beitrag, mit dem wir Ladenmiete, Strom, Steuern, Gehälter und so weiter finanzieren. Dafür gibt's einen saftigen Rabatt auf unsere Produkte.
+                            <br />
+                            <br />
+                            Kunden, die nicht Mitglieder der Einkaufsgemeinschaft sind, zahlen an der Kasse einen prozentualen Aufschlag und können so zu normalen Bioladen-Preisen einkaufen.
+                        </p>
+                        <div class="button-container">
+                            <a role="button" class="btn btn-lg btn-outline-primary btn-green" href="mitmachen.html">Mitmachen</a>
+                        </div>
                     </div>
                 </div>
 
