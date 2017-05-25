@@ -23,7 +23,7 @@
 
             #col-map {
                 padding: 0;
-                min-height: 50vh;
+                height: 100%;
             }
 
             .carousel {
@@ -34,6 +34,7 @@
             .carousel-inner {
                 width: 100%;
                 height: 100%;
+                border-radius: 2px;
             }
 
             .carousel-item {
@@ -44,6 +45,7 @@
 
             .carousel-col {
                 padding: 0 !important;
+                height: 100%;
                 min-height: 50vh !important;
             }
 
@@ -53,6 +55,7 @@
 
             .bilder-row {
                 height: 100%;
+                margin: 0 !important;
             }
 
             .carousel-control-next-icon {
@@ -71,6 +74,29 @@
 
             .carousel-control-next, .carousel-control-prev {
                 opacity: 1 !important;
+            }
+
+            .header {
+                background-image: url('img/MRO_4262.JPG'); 
+                height: 432px; 
+                width: 100%;
+                padding: 0;
+                margin-bottom: 20px;
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: 100% 14%;
+                border-radius: 2px;
+            }
+
+            .ccontrol-prev {
+                position: absolute !important;
+                top: calc(50% - 20px);
+                left: 15px;
+            }
+            .ccontrol-next {
+                position: absolute !important;
+                top: calc(50% - 20px);
+                right: 15px;
             }
 
         </style>
@@ -125,104 +151,114 @@
             </div>
         </nav>
 
-        <div class="container-fluid" id="main-content">
-            <div class="row main-content-row top-margin top-margin">
-                <div class="col-md-6 main-content-col green-col">
-                    <h1 class="display-4 main-content-heading">Wo ihr uns findet</h1>
-                    <p class="main-content-paragraph no-pad-bottom">
-                        Unser Ladengeschäft befindet sich in der Brunnenstraße 15 im Bremer Viertel. Die Möglichkeit mit dem Auto in der Nähe zu parken besteht, jedoch sind die Parkplätze begrenzt. Wer kann, sollte mit dem Fahrrad kommen.
-                        Das Ladengeschäft ist selbstverständlich barrierefrei und sollte es doch einmal etwas eng werden, so steht das Team hilfreich zur Seite.
-                    </p>
-                    <p class="main-content-paragraph no-pad-bottom">
-                        <b>Öffnungszeiten des Ladengeschäftes</b>
-                    </p>
-                    <dl class="row main-content-list">
-                        <dt class="col-sm-3">Mo. - Mi., Fr.</dt>
-                        <dd class="col-sm-9">von 09.00 bis 19.00 Uhr</dd>
-
-                        <dt class="col-sm-3">Do.</dt>
-                        <dd class="col-sm-9"> von 09.00 bis 20.00 Uhr</dd>
-                        
-                        <dt class="col-sm-3">Sa.</dt>
-                        <dd class="col-sm-9">von 09.00 bis 14.00 Uhr</dd>
-                    </dl>
-                    <div class="button-container"></div>
-                </div>
-                <div class="col-md-6 main-content-col" id="col-map">
-                    <iframe frameborder="0" style="border:0; display: block; width: 100%; height: 100%;" src="https://www.google.com/maps/embed/v1/place?q=Brunnenstra%C3%9Fe%2015%2C%2028203%2C%20Bremen%2C%20Deutschland&key=AIzaSyD9utpFya0ApBQJQUcXVwx691L89PHvJNc" allowfullscreen></iframe>
+        <div class="container">
+            <div class="row">
+                <div class="header no-pad shadowed col-md-12 top-margin">
                 </div>
             </div>
+        </div>
+
+        <div class="container" id="main-content">
             <div class="row main-content-row">
-                <div class="col-md-6">
-                    <div class="row bilder-row">
-                        <div class="col-md-12 img-col" style="background-image: url('img/MRO_4262.JPG'); min-height: 300px;">
-                        </div>
-                        <div class="col-md-12 main-content-col green-col carousel-col">
-                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
-                                <div class="carousel-inner" role="listbox">
-                                    <div class="carousel-item active" style="background: url('img/IMG_1877.jpg');">
-                    
-                                    </div>
-                                    <div class="carousel-item" style="background: url('img/IMG_1917.jpg');">
-                        
-                                    </div>
-                                    <div class="carousel-item" style="background: url('img/IMG_1885.jpg');">
-                        
-                                    </div>
-                                    <div class="carousel-item" style="background: url('img/IMG_2070.jpg');">
-                        
-                                    </div>
-                                    <div class="carousel-item" style="background: url('img/IMG_1895.jpg');">
-                        
-                                    </div>
-                                    <div class="carousel-item" style="background: url('img/IMG_1899.jpg');">
-                        
-                                    </div>
 
-                                    <div class="carousel-item" style="background: url('img/IMG_2013.jpg');">
-                        
-                                    </div>
-                                    <div class="carousel-item" style="background: url('img/IMG_2097.jpg');">
-                        
-                                    </div>
+                <div class="card-col col-md-6 no-pad shadowed">
+                    <div class=" main-content-col green-col">
+                        <h1 class="display-4 main-content-heading">Wo ihr uns findet</h1>
+                        <p class="main-content-paragraph no-pad-bottom">
+                            Unser Ladengeschäft befindet sich in der Brunnenstraße 15 im Bremer Viertel. Die Möglichkeit mit dem Auto in der Nähe zu parken besteht, jedoch sind die Parkplätze begrenzt. Wer kann, sollte mit dem Fahrrad kommen.
+                            Das Ladengeschäft ist selbstverständlich barrierefrei und sollte es doch einmal etwas eng werden, so steht das Team hilfreich zur Seite.
+                        </p>
+                        <p class="main-content-paragraph no-pad-bottom">
+                            <b>Öffnungszeiten des Ladengeschäftes</b>
+                        </p>
+                        <dl class="row main-content-list">
+                            <dt class="col-sm-3">Mo. - Mi., Fr.</dt>
+                            <dd class="col-sm-9">von 09.00 bis 19.00 Uhr</dd>
 
-                                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
+                            <dt class="col-sm-3">Do.</dt>
+                            <dd class="col-sm-9"> von 09.00 bis 20.00 Uhr</dd>
+                            
+                            <dt class="col-sm-3">Sa.</dt>
+                            <dd class="col-sm-9">von 09.00 bis 14.00 Uhr</dd>
+                        </dl>
+                        <div class="button-container"></div>
+                    </div>
+                </div>
+
+                <div class="card-col col-md-6 no-pad shadowed">
+                    <div class="main-content-col" id="col-map">
+                        <iframe frameborder="0" style="border:0; display: block; width: 100%; height: 100%; border-radius: 2px;" src="https://www.google.com/maps/embed/v1/place?q=Brunnenstra%C3%9Fe%2015%2C%2028203%2C%20Bremen%2C%20Deutschland&key=AIzaSyD9utpFya0ApBQJQUcXVwx691L89PHvJNc" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="card-col col-md-6 no-pad shadowed">
+                    <div class="carousel-col">
+                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner" role="listbox">
+                                <div class="carousel-item active" style="background: url('img/IMG_1877.jpg');">
+                
                                 </div>
+                                <div class="carousel-item" style="background: url('img/IMG_1917.jpg');">
+                    
+                                </div>
+                                <div class="carousel-item" style="background: url('img/IMG_1885.jpg');">
+                    
+                                </div>
+                                <div class="carousel-item" style="background: url('img/IMG_2070.jpg');">
+                    
+                                </div>
+                                <div class="carousel-item" style="background: url('img/IMG_1895.jpg');">
+                    
+                                </div>
+                                <div class="carousel-item" style="background: url('img/IMG_1899.jpg');">
+                    
+                                </div>
+
+                                <div class="carousel-item" style="background: url('img/IMG_2013.jpg');">
+                    
+                                </div>
+                                <div class="carousel-item" style="background: url('img/IMG_2097.jpg');">
+                    
+                                </div>
+
+                                <button class="mini-fab-button ccontrol-prev" href="#carouselExampleControls" data-slide="prev">
+                                    <i><</i>
+                                </button>
+                                <button class="mini-fab-button ccontrol-next" href="#carouselExampleControls" data-slide="next">
+                                    <i>></i>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6 main-content-col lgreen-col laden-text-col">
-                    <h1 class="display-4 main-content-heading">Die Geschichte des Ladens</h1>
-                    <p class="main-content-paragraph">
-                        Am 28.2.1998 eröffnete unser Laden Abakus Naturkost seine Pforten. Initiatoren,
-                        Gesellschafter und einzige Mitarbeiter waren damals Martina Meyer und Lothar Zumfelde.
-                        Beide waren (und sind es noch heute!) überzeugt von der biologischen Produktionsweise und
-                        fairen Vermarktung von Lebensmitteln. Das von Martina und Lothar erarbeitete Konzept für
-                        den Bremer Mitgliederladen orientierte sich u.a. an schon laufenden Modellprojekten in
-                        Berlin.
-                        <br />
-                        <br />
-                        Der Abakus Naturkostladen hatte zur Eröffnung 80 qm Verkaufsfläche und 36 Mitglieder. 
-                        2005 mieteten wir den jetzigen Laden mit 164 qm Verkaufsfläche. Das Interesse
-                        daran, auch ein Mitglied und Teil der Abakusgemeinschaft zu werden, hat sich seit fast 20
-                        Jahren rasant entwickelt. Heute haben wir ca. tausend Mitglieder und 5 feste Vollzeitkräfte
-                         plus Auszubildenden und Aushilfskräften. Das Abakus seit 2003 selber
-                        ausbildet, hat sich dabei als ein großer Vorteil erwiesen.
-                        <br />
-                        <br/>
-                        Seit 2010 bietet Abakus Reisen in enger Zusammenarbeit mit der Lilienthaler Firma Utamtsi
-                        zum Selbstkostenpreis nach Kamerun an. Dort wird Einblick in die Arbeitsstrukturen des
-                        ökologischen und fairen Anbaus und Handels von Kaffee gewährt.                    
-                    </p>
+
+                <div class="card-col col-md-6 no-pad shadowed">
+                    <div class="main-content-col lgreen-col laden-text-col">
+                        <h1 class="display-4 main-content-heading">Unsere Geschichte</h1>
+                        <p class="main-content-paragraph">
+                            Am 28.2.1998 eröffnete unser Laden Abakus Naturkost seine Pforten. Initiatoren,
+                            Gesellschafter und einzige Mitarbeiter waren damals Martina Meyer und Lothar Zumfelde.
+                            Beide waren (und sind es noch heute!) überzeugt von der biologischen Produktionsweise und
+                            fairen Vermarktung von Lebensmitteln. Das von Martina und Lothar erarbeitete Konzept für
+                            den Bremer Mitgliederladen orientierte sich u.a. an schon laufenden Modellprojekten in
+                            Berlin.
+                            <br />
+                            <br />
+                            Der Abakus Naturkostladen hatte zur Eröffnung 80 qm Verkaufsfläche und 36 Mitglieder. 
+                            2005 mieteten wir den jetzigen Laden mit 164 qm Verkaufsfläche. Das Interesse
+                            daran, auch ein Mitglied und Teil der Abakusgemeinschaft zu werden, hat sich seit fast 20
+                            Jahren rasant entwickelt. Heute haben wir ca. tausend Mitglieder und 5 feste Vollzeitkräfte
+                                plus Auszubildenden und Aushilfskräften. Das Abakus seit 2003 selber
+                            ausbildet, hat sich dabei als ein großer Vorteil erwiesen.
+                            <br />
+                            <br/>
+                            Seit 2010 bietet Abakus Reisen in enger Zusammenarbeit mit der Lilienthaler Firma Utamtsi
+                            zum Selbstkostenpreis nach Kamerun an. Dort wird Einblick in die Arbeitsstrukturen des
+                            ökologischen und fairen Anbaus und Handels von Kaffee gewährt.                    
+                        </p>
+                    </div>
                 </div>
+
             </div>
         </div>
 
