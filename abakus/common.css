@@ -48,16 +48,13 @@ canvas {
     box-shadow: 0 1px 2px 0px rgba(0, 0, 0, 0.37);
 }
 
-#main-content {
-    min-height: 100vh;
-}
-
 .img-col {
     background-position: center;
     padding: 0;
     background-size: cover;
     background-repeat: no-repeat;
     min-height: 400px;
+    height: 100%;
 }
 
 .col-img {
@@ -123,6 +120,11 @@ canvas {
 .lgreen-col {
     background: #c5e1a5;
     color: rgba(0, 0, 0, 0.56) !important;
+}
+
+.lgreen-col a {
+    color: rgba(0, 0, 0, 0.56) !important;
+    text-decoration: underline dotted;
 }
 
 .btn-lgreen {
