@@ -28,7 +28,6 @@
         </div>
         <script type="text/javascript">
 
-            let mouseDown = false
             let ctx = 0
             let cty = 0
             let cth = 0
@@ -64,14 +63,6 @@
                 ctw = ct.clientWidth
 
                 addBars(ctx, ctw-ctx/1)
-
-                ct.addEventListener('mousedown', (evt) => {
-                    mouseDown = true
-                })
-
-                ct.addEventListener('mouseup', (evt) => {
-                    mouseDown = false
-                })
 
                 ct.addEventListener('mousemove', (evt) => {
                     lastX = evt.clientX
