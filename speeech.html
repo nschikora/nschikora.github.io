@@ -1,0 +1,19 @@
+<script type="text/javascript">
+    window.onload = () => {
+        let urlParams = new URLSearchParams(window.location.search);
+        let text = urlParams.get('text');
+
+        if (text) {
+            let ssu = new SpeechSynthesisUtterance(text);
+            ssu.lang = 'de-DE';
+            speechSynthesis.speak(ssu);
+        }
+
+        document.querySelector('#speak').onclick = () => {
+            window.location.href = `/speeech.html?text=${document.querySelector('#text').value}`
+        }
+    }
+</script>
+
+<input type="text" id="text"/>
+<a href="#" id="speak">Sprich!</a>

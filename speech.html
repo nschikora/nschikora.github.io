@@ -1,0 +1,22 @@
+<script type="text/javascript">
+    window.onload = () => {
+      document.querySelector('#speak').onclick = () => {
+        document.querySelector('#speak').href = window.URL.createObjectURL(
+          new Blob([
+            `
+              <script type="text/javascript">
+                window.onload = () => {
+                  var ssu = new SpeechSynthesisUtterance("${document.querySelector('#text').value}");
+                  ssu.lang = 'de-DE';
+                  speechSynthesis.speak(ssu);
+                }
+              <\/script>
+            `
+          ], {type : 'text/html'})
+        );
+      }
+    }
+   </script>
+  
+   <input type="text" id="text"/>
+   <a href="#" id="speak">Sprich!</a>
