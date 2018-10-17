@@ -1,19 +1,68 @@
-<script type="text/javascript">
-    window.onload = () => {
-        let urlParams = new URLSearchParams(window.location.search);
-        let text = urlParams.get('text');
-
-        if (text) {
-            let ssu = new SpeechSynthesisUtterance(text);
-            ssu.lang = 'de-DE';
-            speechSynthesis.speak(ssu);
-        }
-
-        document.querySelector('#speak').onclick = () => {
-            window.location.href = `/speeech.html?text=${document.querySelector('#text').value}`
-        }
-    }
-</script>
-
-<input type="text" id="text"/>
-<a href="#" id="speak">Sprich!</a>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style type="text/css">
+            body {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-content: center;
+                height: 100vh;
+                padding: 2rem;
+            }
+            input:focus {
+                outline: none;
+            }
+            body * {
+                flex: 0 0 100%;
+                max-width: 720px;
+                display: block;
+                height: 3rem;
+                font-size: 2rem;
+                border: 1px solid #333;
+                padding: .5rem;
+            }
+            #text {
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+            }
+            #speak {
+                background-color: #333;
+                color: white;
+                border-bottom-left-radius: 3px;
+                border-bottom-right-radius: 3px;
+                text-align: center;
+                text-transform: uppercase;
+                text-decoration: none;
+                font-family: sans-serif;
+                font-weight: 100;
+                letter-spacing: -2px;
+            }
+        </style>
+        <script type="text/javascript">
+            window.onload = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const text = urlParams.get('text');
+        
+                if (text) {
+                    let ssu = new SpeechSynthesisUtterance(text);
+                    ssu.lang = 'de-DE';
+                    speechSynthesis.speak(ssu);
+                    document.querySelector('#text').value = text;
+                }
+        
+                document.querySelector('#speak').onclick = () => {
+                    if (document.querySelector('#text').value) {
+                        window.location.href = `speeech.html?text=${document.querySelector('#text').value}`;
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <input type="text" id="text" placeholder="Schreib was..."/>
+        <a href="#" id="speak">Sprich! 📢</a>
+    </body>
+</html>
