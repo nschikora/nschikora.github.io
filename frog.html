@@ -1,0 +1,47 @@
+<script src="https://unpkg.com/canvaskit-wasm@0.3.0/bin/canvaskit.js"></script>
+<script type="text/javascript">
+CanvasKitInit({
+     locateFile: (file) => 'https://unpkg.com/canvaskit-wasm@0.3.0/bin/'+file,
+}).ready().then(() => {
+  fetch('https://nschikora.github.io/nicerfrog.json').then((resp) => {
+    resp.text().then((jsonStr) => {
+      frog(CanvasKit, jsonStr);
+    });
+  });
+})
+
+
+function frog(CanvasKit, jsonStr, bounds) {
+  if (!CanvasKit || !jsonStr) {
+    return;
+  }
+  const animation = CanvasKit.MakeAnimation(jsonStr);
+  const duration = animation.duration() * 1000;
+  bounds = {fLeft: 0, fTop: 0, fRight: 500, fBottom: 500};
+
+  const surface = CanvasKit.MakeCanvasSurface(canvas.id);
+  if (!surface) {
+    console.log('Could not make surface');
+    return;
+  }
+  const context = CanvasKit.currentContext();
+  const skcanvas = surface.getCanvas();
+
+  let firstFrame = new Date().getTime();
+
+  function drawFrame() {
+    // settingCurrentContext required if there are multiple contexts
+    // on the same page.
+    CanvasKit.setCurrentContext(context);
+
+    let now = new Date().getTime();
+    let seek = ((now - firstFrame) / duration) % 1.0;
+    
+    animation.seek(seek);
+    animation.render(skcanvas, bounds);
+    skcanvas.flush();
+    requestAnimationFrame(drawFrame);
+  }
+  requestAnimationFrame(drawFrame);
+}
+</script>
