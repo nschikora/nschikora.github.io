@@ -1,3 +1,4 @@
+<canvas id="canvas" width="1045" height="813">
 <script src="https://unpkg.com/canvaskit-wasm@0.3.0/bin/canvaskit.js"></script>
 <script type="text/javascript">
 CanvasKitInit({
@@ -15,9 +16,10 @@ function frog(CanvasKit, jsonStr, bounds) {
   if (!CanvasKit || !jsonStr) {
     return;
   }
+  const canvas = document.getElementById("canvas");
   const animation = CanvasKit.MakeAnimation(jsonStr);
   const duration = animation.duration() * 1000;
-  bounds = {fLeft: 0, fTop: 0, fRight: 500, fBottom: 500};
+  bounds = {fLeft: 0, fTop: 0, fRight: 1045, fBottom: 813};
 
   const surface = CanvasKit.MakeCanvasSurface(canvas.id);
   if (!surface) {
