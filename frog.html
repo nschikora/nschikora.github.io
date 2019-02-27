@@ -2,10 +2,10 @@
 <script type="text/javascript">
 CanvasKitInit({
      locateFile: (file) => 'https://unpkg.com/canvaskit-wasm@0.3.0/bin/'+file,
-}).then(() => {
+}).then((ck) => {
   fetch('https://nschikora.github.io/nicerfrog.json').then((resp) => {
     resp.text().then((jsonStr) => {
-      frog(CanvasKit, jsonStr);
+      frog(ck, jsonStr);
     });
   });
 })
