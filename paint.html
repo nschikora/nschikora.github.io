@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <style type="text/css">
+            body {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                margin: 0;
+            }
+            #container {
+                height: 500px;
+                flex: 0 0 100%;
+                background-color: aquamarine;
+                display: flex;
+                align-items: flex-end;
+            }
+            .bar {
+                display: block;
+                flex: 0 0 1px;
+                height: 0;
+                background-color: beige;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+
+        </div>
+        <script type="text/javascript">
+
+            let ctx = 0
+            let cty = 0
+            let cth = 0
+            let ctw = 0
+            let bars = []
+            let ct = null
+
+            let lastX = 0
+            let lastY = 0
+
+            function addBars(dx, nbars) {
+                for (let i = 0; i < nbars; i++) {
+                    ct.insertAdjacentHTML('beforeEnd', '<div class="bar"></div>')
+                }
+                bars = document.querySelectorAll('.bar')
+            }
+
+            function setHeightAt(x, y) {
+                const nbar = Math.ceil((x+ctx)/1)
+                if (nbar < 0 || nbar > bars.length) {
+                    return
+                }
+                bars[nbar].setAttribute('style', `height: ${(cth)-(y-cty)}`)
+            };
+
+            (function() {
+
+                ct = document.querySelector('#container')
+
+                ctx = ct.offsetLeft
+                cty = ct.offsetTop
+                cth = ct.clientHeight
+                ctw = ct.clientWidth
+
+                addBars(ctx, ctw-ctx/1)
+
+                ct.addEventListener('mousemove', (evt) => {
+                    lastX = evt.clientX
+                    lastY = evt.clientY
+                })
+
+                window.requestAnimationFrame(function updateMouse(){
+                    setHeightAt(lastX, lastY)
+                    window.requestAnimationFrame(updateMouse)
+                })
+
+            })()
+        </script>
+    </body>
+</html>
