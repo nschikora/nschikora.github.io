@@ -3,7 +3,7 @@
 <script type="text/javascript">
 CanvasKitInit({
      locateFile: (file) => 'https://nschikora.github.io/'+file,
-}).then((ck) => {
+}).ready().then((ck) => {
   fetch('https://nschikora.github.io/nicerfrog.json').then((resp) => {
     resp.text().then((jsonStr) => {
       frog(ck, jsonStr);
