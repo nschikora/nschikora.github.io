@@ -1,0 +1,71 @@
+<style>
+    body {
+        font-family: monospace;
+        margin: 0;
+    }
+    #bg {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+    #floats {
+        max-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+    .float {
+        box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 2px 0px;
+        border-radius: 4px;
+        width: 100%;
+        height: 100px;
+        width: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px;
+        align-self: flex-start;
+        flex: 0 0 auto;
+    }
+</style>
+<div id="bg">
+    <div id="floats"></div>
+</div>
+
+<script>
+    function randomColor() {
+        return `#${Math.round(Math.random()*255).toString(16).padStart(2, 0)}${Math.round(Math.random()*255).toString(16).padStart(2, 0)}${Math.round(Math.random()*255).toString(16).padStart(2, 0)}`
+    }
+    window.onload = () => {
+        const bg = document.getElementById('bg')
+        const floats = document.getElementById('floats')
+
+        let color = 'ffffff'
+
+        window.setInterval(() => {
+            color = randomColor()
+            bg.setAttribute('style', `background-color: ${color};`)
+        }, 1000)
+
+        bg.onclick = () => {
+            if (document.getElementById(`float-${color}`)) {
+                return
+            }
+            const d = document.createElement('div')
+            d.setAttribute('id', `float-${color}`)
+            d.setAttribute('class', `float`)
+            d.setAttribute('style', `background-color: ${color};`)
+            d.innerText = `${color}`
+            d.onclick = (ev) => { 
+                ev.preventDefault()
+                ev.stopPropagation()
+                ev.target.remove()
+            }
+            floats.append(d)
+        }
+    }
+</script>
