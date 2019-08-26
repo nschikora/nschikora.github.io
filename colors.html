@@ -51,7 +51,7 @@
             bg.setAttribute('style', `background-color: ${color};`)
         }, 1000)
 
-        bg.onclick = () => {
+        bg.ondblclick = () => {
             if (document.getElementById(`float-${color}`)) {
                 return
             }
