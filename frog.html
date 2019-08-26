@@ -1,8 +1,8 @@
 <canvas id="canvas" width="1045" height="813">
-<script type="text/javascript" src="https://unpkg.com/canvaskit-wasm@0.6.0/bin/canvaskit.js"></script>
+<script type="text/javascript" src="https://nschikora.github.io/node_module/canvaskit-wasm/bin/canvaskit.js"></script>
 <script type="text/javascript">
-CanvasKitInit({
-     locateFile: (file) => 'https://unpkg.com/canvaskit-wasm@0.6.0/bin/'+file,
+CanvasKitInit({s
+     locateFile: (file) => 'https://nschikora.github.io/node_modules/canvaskit-wasm/bin/'+file,
 }).then((ck) => {
   fetch('https://nschikora.github.io/nicerfrog.json').then((resp) => {
     resp.text().then((jsonStr) => {
