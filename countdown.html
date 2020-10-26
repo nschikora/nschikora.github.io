@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Countdown</title>
+    </head>
+    <style type="text/css"">
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: '#333';
+            font-family: sans-serif;
+            font-size: x-large;
+        }
+    </style>
+    <script type="text/javascript">
+        function handleLoad() {
+            const el = document.getElementById('container')
+            const endDate = new Date('2021-05-06')
+            setInterval(() => {
+                const remainingMs = endDate - Date.now()
+                const remainingDays = remainingMs / (1000 * 60 * 60 * 24)
+                el.innerText = `Noch ${remainingDays.toFixed(6)} Tage`
+            }, 50)
+        }
+        window.onload = handleLoad
+    </script>
+    <body>
+        <div id="container"></div>
+    </body>
+</html>
