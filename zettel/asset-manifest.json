@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/zettel/static/css/main.f3a41d43.chunk.css",
-    "main.js": "/zettel/static/js/main.a9819134.chunk.js",
-    "main.js.map": "/zettel/static/js/main.a9819134.chunk.js.map",
+    "main.css": "/zettel/static/css/main.609a4e27.chunk.css",
+    "main.js": "/zettel/static/js/main.e15536a0.chunk.js",
+    "main.js.map": "/zettel/static/js/main.e15536a0.chunk.js.map",
     "runtime-main.js": "/zettel/static/js/runtime-main.9296a043.js",
     "runtime-main.js.map": "/zettel/static/js/runtime-main.9296a043.js.map",
     "static/js/2.53370024.chunk.js": "/zettel/static/js/2.53370024.chunk.js",
     "static/js/2.53370024.chunk.js.map": "/zettel/static/js/2.53370024.chunk.js.map",
     "index.html": "/zettel/index.html",
-    "precache-manifest.729410bae2e82bc0494c272779012168.js": "/zettel/precache-manifest.729410bae2e82bc0494c272779012168.js",
+    "precache-manifest.9545fab9bda5571ccdb6b0eaee06c18c.js": "/zettel/precache-manifest.9545fab9bda5571ccdb6b0eaee06c18c.js",
     "service-worker.js": "/zettel/service-worker.js",
-    "static/css/main.f3a41d43.chunk.css.map": "/zettel/static/css/main.f3a41d43.chunk.css.map",
+    "static/css/main.609a4e27.chunk.css.map": "/zettel/static/css/main.609a4e27.chunk.css.map",
     "static/js/2.53370024.chunk.js.LICENSE.txt": "/zettel/static/js/2.53370024.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.9296a043.js",
     "static/js/2.53370024.chunk.js",
-    "static/css/main.f3a41d43.chunk.css",
-    "static/js/main.a9819134.chunk.js"
+    "static/css/main.609a4e27.chunk.css",
+    "static/js/main.e15536a0.chunk.js"
   ]
 }
