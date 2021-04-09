@@ -1,11 +1,11 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "43bb181c2f610b6db403d385e25f21fc",
+    "revision": "cec2c5f86357181329253620c6af4017",
     "url": "/zettel/index.html"
   },
   {
-    "revision": "e45130856b674e409c16",
-    "url": "/zettel/static/css/main.609a4e27.chunk.css"
+    "revision": "b01a6203a3bea432edbf",
+    "url": "/zettel/static/css/main.84a52df4.chunk.css"
   },
   {
     "revision": "59c43c2cd97dc1a75bbf",
@@ -16,7 +16,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/zettel/static/js/2.53370024.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e45130856b674e409c16",
+    "revision": "b01a6203a3bea432edbf",
     "url": "/zettel/static/js/main.e15536a0.chunk.js"
   },
   {
