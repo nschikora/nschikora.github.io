@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenPose JSON Renderer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .keyframe-btn.active {
+            background-color: #0891b2 !important; /* cyan-600 */
+            box-shadow: 0 0 0 2px #06b6d4; /* cyan-500 ring */
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .add-btn {
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+        
+        .add-btn:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+        
+        /* Seek Slider Styling */
+        .slider {
+            background: linear-gradient(to right, #06b6d4 0%, #06b6d4 0%, #374151 0%, #374151 100%);
+        }
+        
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            height: 16px;
+            width: 16px;
+            background: #06b6d4;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .slider::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            background: #06b6d4;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen flex-col p-4">
+
+    <div class="w-full max-w-3xl text-center mb-6">
+        <h1 class="text-3xl font-bold text-cyan-400">OpenPose Keyframe Animation</h1>
+        <p class="text-gray-400 mt-2">This canvas displays a stick figure animated through multiple OpenPose keyframes.</p>
+    </div>
+
+    <!-- Animation Controls -->
+    <div class="flex flex-col gap-4 mb-6">
+        <div class="flex gap-4 justify-center">
+            <button id="playBtn" class="bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg transition-colors">
+                ⏸️ Pause
+            </button>
+            <button id="resetBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors">
+                🔄 Stop
+            </button>
+            <div class="flex items-center gap-2">
+                <label for="speedSlider" class="text-gray-300">Speed:</label>
+                <input type="range" id="speedSlider" min="0.5" max="3" step="0.1" value="1" class="w-24">
+                <span id="speedValue" class="text-gray-300 w-8">1x</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="easingSelect" class="text-gray-300">Easing:</label>
+                <select id="easingSelect" class="bg-gray-700 text-white px-2 py-1 rounded border border-gray-600">
+                    <option value="linear">Linear</option>
+                    <option value="easeIn">Ease In</option>
+                    <option value="easeOut">Ease Out</option>
+                    <option value="easeInOut" selected>Ease In-Out</option>
+                    <option value="easeInCubic">Ease In Cubic</option>
+                    <option value="easeOutCubic">Ease Out Cubic</option>
+                    <option value="easeInOutCubic">Ease In-Out Cubic</option>
+                    <option value="easeInQuart">Ease In Quart</option>
+                    <option value="easeOutQuart">Ease Out Quart</option>
+                    <option value="easeInOutQuart">Ease In-Out Quart</option>
+                    <option value="easeInBack">Ease In Back</option>
+                    <option value="easeOutBack">Ease Out Back</option>
+                    <option value="easeInOutBack">Ease In-Out Back</option>
+                    <option value="easeInBounce">Ease In Bounce</option>
+                    <option value="easeOutBounce">Ease Out Bounce</option>
+                    <option value="easeInOutBounce">Ease In-Out Bounce</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2">
+                <label for="canvasSizeSelect" class="text-gray-300">Size:</label>
+                <select id="canvasSizeSelect" class="bg-gray-700 text-white px-2 py-1 rounded border border-gray-600">
+                    <option value="600x450">Small (600×450)</option>
+                    <option value="800x600" selected>Medium (800×600)</option>
+                    <option value="1000x750">Large (1000×750)</option>
+                    <option value="1200x900">XL (1200×900)</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="loopCheckbox" checked class="text-cyan-500">
+                <label for="loopCheckbox" class="text-gray-300">Loop</label>
+            </div>
+        </div>
+        
+        <!-- Custom Size Controls (initially hidden) -->
+        <div id="customSizeControls" class="hidden flex gap-4 justify-center items-center">
+            <div class="flex items-center gap-1">
+                <label for="customWidth" class="text-gray-300 text-sm">W:</label>
+                <input type="number" id="customWidth" value="800" min="400" max="1600" class="bg-gray-700 text-white px-2 py-1 rounded border border-gray-600 w-20 text-sm">
+            </div>
+            <div class="flex items-center gap-1">
+                <label for="customHeight" class="text-gray-300 text-sm">H:</label>
+                <input type="number" id="customHeight" value="600" min="300" max="1200" class="bg-gray-700 text-white px-2 py-1 rounded border border-gray-600 w-20 text-sm">
+            </div>
+            <button id="applySizeBtn" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition-colors">Apply</button>
+        </div>
+        
+        <!-- Animation Seek Slider -->
+        <div class="flex flex-col items-center gap-2">
+            <div class="flex items-center gap-3 w-full max-w-md">
+                <span class="text-gray-300 text-sm w-12">0:00</span>
+                <div class="flex-1 flex items-center gap-2">
+                    <input type="range" id="seekSlider" min="0" max="100" value="0" 
+                           class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider">
+                </div>
+                <span id="seekTime" class="text-gray-300 text-sm w-12">0:00</span>
+            </div>
+            <div class="text-gray-400 text-xs">
+                <span id="seekInfo">Seek through animation</span>
+            </div>
+        </div>
+        
+        <!-- Keyframe Controls -->
+        <div class="flex flex-col items-center gap-3">
+            <div class="text-gray-300 text-sm">
+                <span id="keyframeInfo">Frame 1 → 2</span>
+                <span class="mx-2">|</span>
+                <span id="easingInfo">Ease In-Out: Slow start, fast middle, slow end</span>
+                <span class="mx-2">|</span>
+                <span id="dragInfo" class="text-cyan-400">🎯 Drag keypoints when paused</span>
+            </div>
+            
+            <!-- Keyframe Navigation with Contextual Add Buttons -->
+            <div class="flex items-center gap-1" id="keyframeButtons">
+                <!-- This will be populated dynamically -->
+            </div>
+            
+            <!-- Delete Button (Separate from main flow) -->
+            <div class="flex gap-2 text-sm mt-3">
+                <button id="deleteKeyframe" class="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded transition-colors" title="Delete current keyframe">
+                    🗑️ Delete
+                </button>
+                <button id="exportPoses" class="bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded transition-colors" title="Export poses as JSON">
+                    📄 Export JSON
+                </button>
+                <label for="importPoses" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded transition-colors cursor-pointer" title="Import poses from JSON">
+                    📁 Import JSON
+                </label>
+                <input type="file" id="importPoses" accept=".json" class="hidden">
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas where the stick figure will be drawn -->
+    <canvas id="poseCanvas" class="bg-gray-800 rounded-lg shadow-lg border border-gray-700"></canvas>
+
+    <!-- Color Legend -->
+    <div class="mt-4 bg-gray-800 rounded-lg p-4 border border-gray-700">
+        <h3 class="text-lg font-semibold text-cyan-400 mb-3 text-center">Color Legend</h3>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-white" style="background-color: #06b6d4;"></div>
+                <span class="text-gray-300">Torso/Core</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-white" style="background-color: #ef4444;"></div>
+                <span class="text-gray-300">Right Arm</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-white" style="background-color: #3b82f6;"></div>
+                <span class="text-gray-300">Left Arm</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-white" style="background-color: #f97316;"></div>
+                <span class="text-gray-300">Right Leg</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-white" style="background-color: #8b5cf6;"></div>
+                <span class="text-gray-300">Left Leg</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <div class="w-4 h-4 rounded-full border border-white" style="background-color: #eab308;"></div>
+                <span class="text-gray-300">Head/Face</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA AND CONFIGURATION ---
+
+        // All pose keyframes - now organized as an array for easy iteration
+        const poses = [
+            [{"people": [{"pose_keypoints_2d": [378.62797810302845, 108.21663023365875, 1.0, 378.6279781030284, 179.87733615852062, 1.0, 316.19092739621794, 177.74880033897023, 1.0, 214.0212080578009, 187.68196749687195, 1.0, 116.10856035848451, 191.93903913597262, 1.0, 441.06502880983885, 182.005871978071, 1.0, 544.653772027956, 190.52001525627236, 1.0, 641.1473958475722, 190.52001525627236, 1.0, 344.57140499022273, 367.89800021880205, 1.0, 353.0855482684242, 533.9237941437297, 1.0, 365.8567631857263, 695.6925164295568, 1.0, 419.77967061433526, 369.3170240985023, 1.0, 411.2655273361338, 532.5047702640296, 1.0, 389.980164209107558, 690.0164209107558, 1.0, 367.27578706542647, 95.4454153163565, 1.0, 392.81821690003085, 95.4454153163565, 1.0, 351.66652438872393, 101.12151083515744, 1.0, 414.1035750955343, 102.5405347148577, 1.0]}], "canvas_height": 768, "canvas_width": 768}],
+            [{"people": [{"pose_keypoints_2d": [384.20129182603614, 108.05394766065803, 1.0, 388.2368462880452, 191.64757580227325, 1.0, 321.93845155504005, 191.07106802198626, 1.0, 249.29847123887805, 266.0170794592963, 1.0, 176.65849092271594, 328.2799197302924, 1.0, 454.5352410210503, 192.22408358256024, 1.0, 521.4101435343424, 260.25200165642633, 1.0, 602.1212327745226, 331.73896641201446, 1.0, 344.99876276652026, 375.5535577138265, 1.0, 353.0698716905381, 534.6697050730388, 1.0, 346.15177832709423, 668.4195100996228, 1.0, 430.32191424899634, 373.2475265926785, 1.0, 425.7098520067002, 531.2106583913167, 1.0, 409.5676341586643, 685.7147435082329, 1.0, 371.5181206597222, 95.37077649434406, 1.0, 396.8844629923502, 95.37077649434406, 1.0, 357.6819339328342, 105.74791653951007, 1.0, 417.63874308268225, 105.74791653951007, 1.0]}], "canvas_height": 768, "canvas_width": 768}],
+            [{"people": [{"pose_keypoints_2d": [424.43186151981354, 126.59524319569266, 1.0, 389.23273417353636, 198.66964680949843, 1.0, 348.44644375642144, 198.1109305024147, 1.0, 313.80603271722794, 289.7404048641522, 1.0, 321.6280610164006, 388.0744749108951, 1.0, 430.01902459065127, 199.22836311658216, 1.0, 459.07227255900705, 279.6835113366444, 1.0, 470.2465987006824, 319.91108544667554, 1.0, 380.8519895672798, 379.1350139975548, 1.0, 374.1473938822746, 533.3407147526741, 1.0, 335.03725238641096, 670.7849262952805, 1.0, 443.42821596066165, 376.90014876921964, 1.0, 415.4924006064732, 537.8104452093443, 1.0, 381.96942218144727, 677.4895219802856, 1.0, 411.02267014980316, 114.30348443984985, 1.0, 430.01902459065127, 116.53834966818488, 1.0, 378.6171243389448, 119.89064751068747, 1.0, 431.1364572048187, 124.36037796735764, 1.0]}], "canvas_height": 768, "canvas_width": 768}],
+            [{"people": [{"pose_keypoints_2d": [400.9120585694909, 87.54802926381421, 1.0, 375.95323151784646, 165.32669961079955, 1.0, 318.489885515223, 168.80932664126158, 1.0, 313.84638280794024, 266.3228834941983, 1.0, 409.0381883072357, 254.7141267259916, 1.0, 433.4165775204699, 161.84407258033752, 1.0, 441.5427072582145, 261.67938078691566, 1.0, 342.8682747284571, 258.19675375645363, 1.0, 344.02915040527785, 369.6408187312385, 1.0, 363.76403691122925, 531.0025378093123, 1.0, 382.33804774036, 667.9858676741521, 1.0, 421.80782075226307, 367.3190673775971, 1.0, 414.842566691339, 527.5199107788503, 1.0, 398.59030721584963, 659.8597379364073, 1.0, 386.9815504476428, 74.77839681878686, 1.0, 410.19906398405624, 77.10014817242813, 1.0, 357.95965852712584, 81.74365087971091, 1.0, 417.1643180449804, 87.54802926381421, 1.0]}], "canvas_height": 768, "canvas_width": 768}],
+            [{"people": [{"pose_keypoints_2d": [392.51107201973593, 86.70845746994019, 1.0, 360.86569096644723, 165.8219101031621, 1.0, 386.860111117363, 159.04075702031457, 1.0, 481.7962542772293, 144.34825867414474, 1.0, 495.3585604429245, 82.18768874804175, 1.0, 371.8712708155315, 166.60306318600965, 1.0, 476.0, 125.0, 1.0, 504.0, 50.0, 1.0, 402.6828016440073, 355.6941964228947, 1.0, 394.7714563806852, 519.5720625917116, 1.0, 364.25626750787103, 687.9706974824271, 1.0, 347.3033848007519, 357.954580783844, 1.0, 363.1260753273964, 499.22860334316886, 1.0, 314.5278115669887, 629.2007040977478, 1.0, 376.6883814930916, 79.92730438709259, 1.0, 385.72991893688845, 77.66692002614343, 1.0, 347.3033848007519, 101.40095581611001, 1.0, 357.4751144250233, 102.53114799658454, 1.0]}], "canvas_height": 768, "canvas_width": 768}]
+        ];
+        
+        // --- ANIMATION VARIABLES ---
+        let animationStartTime = 0;
+        let animationDuration = 2000; // Duration per keyframe transition in milliseconds
+        let isAnimating = false;
+        let shouldLoop = true;
+        let animationId = null;
+        
+        // Keyframe-specific variables
+        let currentKeyframe = 0;
+        let nextKeyframe = 1;
+        let totalKeyframes = poses.length;
+
+        // --- CANVAS CONFIGURATION ---
+        // Custom canvas size (independent of original OpenPose data)
+        let canvasWidth = 800;
+        let canvasHeight = 600;
+        
+        // Original OpenPose canvas dimensions for normalization reference
+        const originalCanvasWidth = poses[0][0].canvas_width;
+        const originalCanvasHeight = poses[0][0].canvas_height;
+
+        // Normalized poses (calculated once on load)
+        let normalizedPoses = [];
+
+        // --- DRAG INTERACTION VARIABLES ---
+        let isDragging = false;
+        let draggedKeypointIndex = -1;
+        let draggedPoseIndex = -1;
+        let mouseX = 0;
+        let mouseY = 0;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        // Defines a dictionary mapping human body parts to their corresponding indices,
+        // exactly as specified in the user's snippet.
+        const KEYPOINTS = {
+            Nose: 0, Neck: 1, RShoulder: 2, RElbow: 3, RWrist: 4,
+            LShoulder: 5, LElbow: 6, LWrist: 7, RHip: 8, RKnee: 9,
+            RAnkle: 10, LHip: 11, LKnee: 12, LAnkle: 13, REye: 14,
+            LEye: 15, REar: 16, LEar: 17, Background: 18
+        };
+
+        // Create reverse mapping from index to keypoint name
+        const KEYPOINT_NAMES = [
+            'Nose', 'Neck', 'RShoulder', 'RElbow', 'RWrist',
+            'LShoulder', 'LElbow', 'LWrist', 'RHip', 'RKnee', 
+            'RAnkle', 'LHip', 'LKnee', 'LAnkle', 'REye',
+            'LEye', 'REar', 'LEar', 'Background'
+        ];
+
+        // Defines which keypoints to connect, built exactly from the user's POSE_PAIRS snippet.
+        const skeletonConnections = [
+            [KEYPOINTS.Neck, KEYPOINTS.RShoulder],
+            [KEYPOINTS.Neck, KEYPOINTS.LShoulder],
+            [KEYPOINTS.RShoulder, KEYPOINTS.RElbow],
+            [KEYPOINTS.RElbow, KEYPOINTS.RWrist],
+            [KEYPOINTS.LShoulder, KEYPOINTS.LElbow],
+            [KEYPOINTS.LElbow, KEYPOINTS.LWrist],
+            [KEYPOINTS.Neck, KEYPOINTS.RHip],
+            [KEYPOINTS.RHip, KEYPOINTS.RKnee],
+            [KEYPOINTS.RKnee, KEYPOINTS.RAnkle],
+            [KEYPOINTS.Neck, KEYPOINTS.LHip],
+            [KEYPOINTS.LHip, KEYPOINTS.LKnee],
+            [KEYPOINTS.LKnee, KEYPOINTS.LAnkle],
+            [KEYPOINTS.Neck, KEYPOINTS.Nose],
+            [KEYPOINTS.Nose, KEYPOINTS.REye],
+            [KEYPOINTS.REye, KEYPOINTS.REar],
+            [KEYPOINTS.Nose, KEYPOINTS.LEye],
+            [KEYPOINTS.LEye, KEYPOINTS.LEar]
+        ];
+
+        // Color scheme for different body parts
+        const limbColors = {
+            // Torso/Core - neutral blue
+            torso: '#06b6d4', // cyan-500
+            
+            // Right side - warm colors (red/orange family)
+            rightArm: '#ef4444', // red-500
+            rightLeg: '#f97316', // orange-500
+            
+            // Left side - cool colors (blue/purple family)  
+            leftArm: '#3b82f6', // blue-500
+            leftLeg: '#8b5cf6', // violet-500
+            
+            // Head/Face - bright accent
+            head: '#eab308', // yellow-500
+            
+            // Keypoints - softer versions
+            keypoints: {
+                torso: '#67e8f9', // cyan-300
+                rightSide: '#fca5a5', // red-300
+                leftSide: '#93c5fd', // blue-300
+                head: '#fde047', // yellow-300
+                default: '#d1d5db' // gray-300
+            }
+        };
+
+        // Map each connection to its color category
+        const connectionColors = {
+            // Torso connections
+            [`${KEYPOINTS.Neck}-${KEYPOINTS.RShoulder}`]: limbColors.torso,
+            [`${KEYPOINTS.Neck}-${KEYPOINTS.LShoulder}`]: limbColors.torso,
+            [`${KEYPOINTS.Neck}-${KEYPOINTS.RHip}`]: limbColors.torso,
+            [`${KEYPOINTS.Neck}-${KEYPOINTS.LHip}`]: limbColors.torso,
+            
+            // Right arm
+            [`${KEYPOINTS.RShoulder}-${KEYPOINTS.RElbow}`]: limbColors.rightArm,
+            [`${KEYPOINTS.RElbow}-${KEYPOINTS.RWrist}`]: limbColors.rightArm,
+            
+            // Left arm  
+            [`${KEYPOINTS.LShoulder}-${KEYPOINTS.LElbow}`]: limbColors.leftArm,
+            [`${KEYPOINTS.LElbow}-${KEYPOINTS.LWrist}`]: limbColors.leftArm,
+            
+            // Right leg
+            [`${KEYPOINTS.RHip}-${KEYPOINTS.RKnee}`]: limbColors.rightLeg,
+            [`${KEYPOINTS.RKnee}-${KEYPOINTS.RAnkle}`]: limbColors.rightLeg,
+            
+            // Left leg
+            [`${KEYPOINTS.LHip}-${KEYPOINTS.LKnee}`]: limbColors.leftLeg,
+            [`${KEYPOINTS.LKnee}-${KEYPOINTS.LAnkle}`]: limbColors.leftLeg,
+            
+            // Head/Face
+            [`${KEYPOINTS.Neck}-${KEYPOINTS.Nose}`]: limbColors.head,
+            [`${KEYPOINTS.Nose}-${KEYPOINTS.REye}`]: limbColors.head,
+            [`${KEYPOINTS.REye}-${KEYPOINTS.REar}`]: limbColors.head,
+            [`${KEYPOINTS.Nose}-${KEYPOINTS.LEye}`]: limbColors.head,
+            [`${KEYPOINTS.LEye}-${KEYPOINTS.LEar}`]: limbColors.head
+        };
+
+        // Map keypoints to their color categories for colored keypoints
+        const keypointColors = {
+            [KEYPOINTS.Neck]: limbColors.keypoints.torso,
+            
+            [KEYPOINTS.RShoulder]: limbColors.keypoints.rightSide,
+            [KEYPOINTS.RElbow]: limbColors.keypoints.rightSide,
+            [KEYPOINTS.RWrist]: limbColors.keypoints.rightSide,
+            [KEYPOINTS.RHip]: limbColors.keypoints.rightSide,
+            [KEYPOINTS.RKnee]: limbColors.keypoints.rightSide,
+            [KEYPOINTS.RAnkle]: limbColors.keypoints.rightSide,
+            
+            [KEYPOINTS.LShoulder]: limbColors.keypoints.leftSide,
+            [KEYPOINTS.LElbow]: limbColors.keypoints.leftSide,
+            [KEYPOINTS.LWrist]: limbColors.keypoints.leftSide,
+            [KEYPOINTS.LHip]: limbColors.keypoints.leftSide,
+            [KEYPOINTS.LKnee]: limbColors.keypoints.leftSide,
+            [KEYPOINTS.LAnkle]: limbColors.keypoints.leftSide,
+            
+            [KEYPOINTS.Nose]: limbColors.keypoints.head,
+            [KEYPOINTS.REye]: limbColors.keypoints.head,
+            [KEYPOINTS.LEye]: limbColors.keypoints.head,
+            [KEYPOINTS.REar]: limbColors.keypoints.head,
+            [KEYPOINTS.LEar]: limbColors.keypoints.head
+        };
+
+        // --- MAIN DRAWING LOGIC ---
+
+        window.onload = function() {
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set custom canvas dimensions
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+
+            // Normalize all poses once on load
+            initializeNormalizedPoses();
+
+            // Start with the first pose
+            const keypoints = getScaledKeypoints(0);
+            drawPose(ctx, keypoints);
+            
+            // Set up event listeners for controls
+            setupControls();
+            
+            // Set up mouse interaction for dragging keypoints
+            setupMouseInteraction(canvas);
+            
+            // Start animation
+            startAnimation();
+        };
+
+        /**
+         * Initialize normalized poses from original pose data.
+         * Converts all coordinates from original canvas space to 0-1 normalized space.
+         */
+        function initializeNormalizedPoses() {
+            normalizedPoses = poses.map(pose => {
+                const originalKeypoints = pose[0].people[0].pose_keypoints_2d;
+                const normalizedKeypoints = [];
+                
+                for (let i = 0; i < originalKeypoints.length; i += 3) {
+                    // Normalize x coordinate (0-1)
+                    const normalizedX = originalKeypoints[i] / originalCanvasWidth;
+                    // Normalize y coordinate (0-1)
+                    const normalizedY = originalKeypoints[i + 1] / originalCanvasHeight;
+                    // Keep confidence as-is
+                    const confidence = originalKeypoints[i + 2];
+                    
+                    normalizedKeypoints.push(normalizedX, normalizedY, confidence);
+                }
+                
+                return normalizedKeypoints;
+            });
+        }
+
+        /**
+         * Get scaled keypoints for a specific pose index.
+         * @param {number} poseIndex - Index of the pose to get keypoints for.
+         * @returns {number[]} Scaled keypoints array for current canvas size.
+         */
+        function getScaledKeypoints(poseIndex) {
+            const normalizedKeypoints = normalizedPoses[poseIndex];
+            const scaledKeypoints = [];
+            
+            for (let i = 0; i < normalizedKeypoints.length; i += 3) {
+                // Scale normalized coordinates to current canvas size
+                const scaledX = normalizedKeypoints[i] * canvasWidth;
+                const scaledY = normalizedKeypoints[i + 1] * canvasHeight;
+                const confidence = normalizedKeypoints[i + 2];
+                
+                scaledKeypoints.push(scaledX, scaledY, confidence);
+            }
+            
+            return scaledKeypoints;
+        }
+
+        /**
+         * Interpolates between two normalized keypoint arrays and returns scaled result.
+         * @param {number[]} normalizedKeypoints1 - First normalized keypoints array.
+         * @param {number[]} normalizedKeypoints2 - Second normalized keypoints array.
+         * @param {number} progress - Interpolation progress (0-1).
+         * @returns {number[]} Interpolated and scaled keypoints.
+         */
+        function interpolateNormalizedKeypoints(normalizedKeypoints1, normalizedKeypoints2, progress) {
+            const interpolatedNormalized = [];
+            
+            for (let i = 0; i < normalizedKeypoints1.length; i += 3) {
+                // Interpolate normalized coordinates
+                const x1 = normalizedKeypoints1[i];
+                const x2 = normalizedKeypoints2[i];
+                const y1 = normalizedKeypoints1[i + 1];
+                const y2 = normalizedKeypoints2[i + 1];
+                
+                const interpolatedX = x1 + (x2 - x1) * progress;
+                const interpolatedY = y1 + (y2 - y1) * progress;
+                const confidence = normalizedKeypoints1[i + 2];
+                
+                interpolatedNormalized.push(interpolatedX, interpolatedY, confidence);
+            }
+            
+            // Scale to current canvas size
+            const scaledKeypoints = [];
+            for (let i = 0; i < interpolatedNormalized.length; i += 3) {
+                const scaledX = interpolatedNormalized[i] * canvasWidth;
+                const scaledY = interpolatedNormalized[i + 1] * canvasHeight;
+                const confidence = interpolatedNormalized[i + 2];
+                
+                scaledKeypoints.push(scaledX, scaledY, confidence);
+            }
+            
+            return scaledKeypoints;
+        }
+
+        /**
+         * Sets up event listeners for animation controls.
+         */
+        function setupControls() {
+            const playBtn = document.getElementById('playBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            const loopCheckbox = document.getElementById('loopCheckbox');
+            const easingSelect = document.getElementById('easingSelect');
+            const canvasSizeSelect = document.getElementById('canvasSizeSelect');
+            const customSizeControls = document.getElementById('customSizeControls');
+            const customWidth = document.getElementById('customWidth');
+            const customHeight = document.getElementById('customHeight');
+            const applySizeBtn = document.getElementById('applySizeBtn');
+
+            playBtn.addEventListener('click', () => {
+                if (isAnimating) {
+                    stopAnimation();
+                    playBtn.textContent = '▶️ Play';
+                } else {
+                    startAnimation();
+                    playBtn.textContent = '⏸️ Pause';
+                }
+            });
+
+            resetBtn.addEventListener('click', () => {
+                stopAnimation();
+                currentKeyframe = 0;
+                nextKeyframe = (totalKeyframes > 1) ? 1 : 0;
+                const canvas = document.getElementById('poseCanvas');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawPose(ctx, getScaledKeypoints(0));
+                updateKeyframeIndicator();
+                updateSeekDisplay(0); // Reset seek slider to start
+                playBtn.textContent = '▶️ Play';
+            });
+
+            speedSlider.addEventListener('input', (e) => {
+                const speed = parseFloat(e.target.value);
+                speedValue.textContent = `${speed}x`;
+                animationDuration = 2000 / speed; // Adjust duration based on speed
+            });
+
+            loopCheckbox.addEventListener('change', (e) => {
+                shouldLoop = e.target.checked;
+            });
+
+            easingSelect.addEventListener('change', (e) => {
+                currentEasing = e.target.value;
+                updateEasingInfo();
+            });
+
+            canvasSizeSelect.addEventListener('change', (e) => {
+                if (e.target.value === 'custom') {
+                    customSizeControls.classList.remove('hidden');
+                } else {
+                    customSizeControls.classList.add('hidden');
+                    const [width, height] = e.target.value.split('x').map(Number);
+                    resizeCanvas(width, height);
+                }
+            });
+
+            applySizeBtn.addEventListener('click', () => {
+                const width = parseInt(customWidth.value);
+                const height = parseInt(customHeight.value);
+                resizeCanvas(width, height);
+            });
+
+            // Set up seek slider
+            const seekSlider = document.getElementById('seekSlider');
+            const seekTime = document.getElementById('seekTime');
+            
+            seekSlider.addEventListener('input', (e) => {
+                if (isAnimating) return; // Don't seek while animating
+                
+                const progress = parseFloat(e.target.value) / 100;
+                seekToProgress(progress);
+                updateSeekDisplay(progress);
+            });
+
+            // Set up keyframe navigation buttons
+            setupKeyframeButtons();
+            
+            // Set up keyframe management buttons
+            setupKeyframeManagement();
+            
+            // Initialize easing info
+            updateEasingInfo();
+        }
+
+        /**
+         * Updates the easing information display.
+         */
+        function updateEasingInfo() {
+            const easingInfo = document.getElementById('easingInfo');
+            if (easingInfo) {
+                easingInfo.textContent = easingDescriptions[currentEasing];
+            }
+        }
+
+        /**
+         * Seeks to a specific progress in the animation (0-1).
+         * @param {number} progress - Progress through the full animation (0-1)
+         */
+        function seekToProgress(progress) {
+            // Calculate total animation duration
+            const totalDuration = animationDuration * totalKeyframes;
+            const currentTime = progress * totalDuration;
+            
+            // Calculate which keyframe transition we're in
+            const keyframeProgress = currentTime / animationDuration;
+            const fromKeyframe = Math.floor(keyframeProgress) % totalKeyframes;
+            const toKeyframe = (fromKeyframe + 1) % totalKeyframes;
+            const transitionProgress = keyframeProgress - Math.floor(keyframeProgress);
+            
+            // Update current state
+            currentKeyframe = fromKeyframe;
+            nextKeyframe = toKeyframe;
+            
+            // Get interpolated pose
+            const normalizedKeypoints1 = normalizedPoses[fromKeyframe];
+            const normalizedKeypoints2 = normalizedPoses[toKeyframe];
+            const easedProgress = easingFunctions[currentEasing](transitionProgress);
+            const interpolatedKeypoints = interpolateNormalizedKeypoints(normalizedKeypoints1, normalizedKeypoints2, easedProgress);
+            
+            // Draw the interpolated pose
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, interpolatedKeypoints);
+            
+            // Update UI
+            updateKeyframeIndicator();
+        }
+
+        /**
+         * Updates the seek slider display with current progress.
+         * @param {number} progress - Current progress (0-1)
+         */
+        function updateSeekDisplay(progress) {
+            const seekSlider = document.getElementById('seekSlider');
+            const seekTime = document.getElementById('seekTime');
+            
+            if (seekSlider && seekTime) {
+                seekSlider.value = progress * 100;
+                
+                // Calculate and display time
+                const totalDuration = animationDuration * totalKeyframes;
+                const currentTime = progress * totalDuration;
+                const minutes = Math.floor(currentTime / 60000);
+                const seconds = Math.floor((currentTime % 60000) / 1000);
+                seekTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update slider background
+                const percentage = progress * 100;
+                seekSlider.style.background = `linear-gradient(to right, #06b6d4 0%, #06b6d4 ${percentage}%, #374151 ${percentage}%, #374151 100%)`;
+            }
+        }
+
+        /**
+         * Resizes the canvas to new dimensions and redraws the current pose.
+         * @param {number} width - New canvas width.
+         * @param {number} height - New canvas height.
+         */
+        function resizeCanvas(width, height) {
+            canvasWidth = width;
+            canvasHeight = height;
+            
+            const canvas = document.getElementById('poseCanvas');
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            
+            // Redraw current pose with new scaling
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, getScaledKeypoints(currentKeyframe));
+        }
+
+        /**
+         * Sets up mouse interaction for dragging keypoints.
+         * @param {HTMLCanvasElement} canvas - The canvas element.
+         */
+        function setupMouseInteraction(canvas) {
+            canvas.addEventListener('mousedown', handleMouseDown);
+            canvas.addEventListener('mousemove', handleMouseMove);
+            canvas.addEventListener('mouseup', handleMouseUp);
+            canvas.addEventListener('mouseleave', handleMouseUp); // Stop dragging if mouse leaves canvas
+        }
+
+        /**
+         * Gets mouse coordinates relative to canvas.
+         * @param {MouseEvent} event - The mouse event.
+         * @param {HTMLCanvasElement} canvas - The canvas element.
+         * @returns {{x: number, y: number}} Mouse coordinates.
+         */
+        function getMousePos(event, canvas) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        /**
+         * Finds the keypoint under the mouse cursor.
+         * @param {number} mouseX - Mouse X coordinate.
+         * @param {number} mouseY - Mouse Y coordinate.
+         * @returns {{poseIndex: number, keypointIndex: number} | null} Found keypoint or null.
+         */
+        function findKeypointUnderMouse(mouseX, mouseY) {
+            if (isAnimating) return null; // No dragging during animation
+            
+            const scaledKeypoints = getScaledKeypoints(currentKeyframe);
+            const points = parseKeypoints(scaledKeypoints);
+            const hitRadius = 12; // Slightly larger than visual radius for easier clicking
+            
+            for (let i = 0; i < points.length; i++) {
+                const point = points[i];
+                if (point.confidence > 0.1) {
+                    const distance = Math.sqrt(
+                        Math.pow(mouseX - point.x, 2) + Math.pow(mouseY - point.y, 2)
+                    );
+                    if (distance <= hitRadius) {
+                        return { poseIndex: currentKeyframe, keypointIndex: i };
+                    }
+                }
+            }
+            return null;
+        }
+
+        /**
+         * Handles mouse down events for starting drag operations.
+         * @param {MouseEvent} event - The mouse event.
+         */
+        function handleMouseDown(event) {
+            if (isAnimating) return; // No dragging during animation
+            
+            const canvas = event.target;
+            const mousePos = getMousePos(event, canvas);
+            mouseX = mousePos.x;
+            mouseY = mousePos.y;
+            
+            const hitResult = findKeypointUnderMouse(mouseX, mouseY);
+            if (hitResult) {
+                isDragging = true;
+                draggedKeypointIndex = hitResult.keypointIndex;
+                draggedPoseIndex = hitResult.poseIndex;
+                dragStartX = mouseX;
+                dragStartY = mouseY;
+                canvas.style.cursor = 'grabbing';
+                updateDragInfo();
+                
+                // Prevent default to avoid text selection
+                event.preventDefault();
+            }
+        }
+
+        /**
+         * Handles mouse move events for dragging and hover effects.
+         * @param {MouseEvent} event - The mouse event.
+         */
+        function handleMouseMove(event) {
+            const canvas = event.target;
+            const mousePos = getMousePos(event, canvas);
+            mouseX = mousePos.x;
+            mouseY = mousePos.y;
+            
+            if (isDragging && draggedKeypointIndex >= 0) {
+                // Update the keypoint position
+                updateKeypointPosition(draggedPoseIndex, draggedKeypointIndex, mouseX, mouseY);
+                
+                // Redraw the pose
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawPose(ctx, getScaledKeypoints(currentKeyframe));
+            } else if (!isAnimating) {
+                // Show hover cursor when over a keypoint
+                const hitResult = findKeypointUnderMouse(mouseX, mouseY);
+                canvas.style.cursor = hitResult ? 'grab' : 'default';
+            }
+        }
+
+        /**
+         * Handles mouse up events for ending drag operations.
+         * @param {MouseEvent} event - The mouse event.
+         */
+        function handleMouseUp(event) {
+            if (isDragging) {
+                isDragging = false;
+                draggedKeypointIndex = -1;
+                draggedPoseIndex = -1;
+                updateDragInfo();
+                
+                const canvas = event.target;
+                const hitResult = findKeypointUnderMouse(mouseX, mouseY);
+                canvas.style.cursor = hitResult ? 'grab' : 'default';
+            }
+        }
+
+        /**
+         * Updates a keypoint position in the normalized pose data.
+         * @param {number} poseIndex - Index of the pose to update.
+         * @param {number} keypointIndex - Index of the keypoint to update.
+         * @param {number} canvasX - New X coordinate in canvas space.
+         * @param {number} canvasY - New Y coordinate in canvas space.
+         */
+        function updateKeypointPosition(poseIndex, keypointIndex, canvasX, canvasY) {
+            // Convert canvas coordinates back to normalized coordinates
+            const normalizedX = canvasX / canvasWidth;
+            const normalizedY = canvasY / canvasHeight;
+            
+            // Update the normalized pose data
+            const keypointDataIndex = keypointIndex * 3;
+            normalizedPoses[poseIndex][keypointDataIndex] = normalizedX;
+            normalizedPoses[poseIndex][keypointDataIndex + 1] = normalizedY;
+            // Keep confidence unchanged: normalizedPoses[poseIndex][keypointDataIndex + 2]
+        }
+
+        /**
+         * Sets up keyframe navigation buttons.
+         */
+        function setupKeyframeButtons() {
+            updateKeyframeButtons();
+        }
+
+        /**
+         * Updates keyframe navigation buttons based on current keyframe count.
+         */
+        function updateKeyframeButtons() {
+            const keyframeButtons = document.getElementById('keyframeButtons');
+            keyframeButtons.innerHTML = '';
+            
+            // Add the "+Start" button at the beginning
+            const startBtn = document.createElement('button');
+            startBtn.className = 'add-btn bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs transition-colors min-w-8';
+            startBtn.textContent = '+';
+            startBtn.title = 'Add keyframe before first';
+            startBtn.addEventListener('click', () => addKeyframeAtStart());
+            keyframeButtons.appendChild(startBtn);
+            
+            // Add keyframe buttons with "+Between" buttons in between
+            for (let i = 0; i < totalKeyframes; i++) {
+                const button = document.createElement('button');
+                button.className = `keyframe-btn ${i === currentKeyframe ? 'active bg-blue-600' : 'bg-gray-600'} hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition-colors`;
+                button.textContent = (i + 1).toString();
+                button.addEventListener('click', () => jumpToKeyframe(i));
+                keyframeButtons.appendChild(button);
+                
+                // Add "+Between" button after each keyframe (except the last one)
+                if (i < totalKeyframes - 1) {
+                    const betweenBtn = document.createElement('button');
+                    betweenBtn.className = 'add-btn bg-blue-600 hover:bg-blue-700 text-white py-1 rounded text-xs transition-colors px-0 hover:px-2 w-3 hover:w-8 overflow-hidden';
+                    betweenBtn.textContent = '+';
+                    betweenBtn.title = `Add keyframe between ${i + 1} and ${i + 2}`;
+                    betweenBtn.addEventListener('click', () => addKeyframeBetweenIndex(i));
+                    keyframeButtons.appendChild(betweenBtn);
+                }
+            }
+            
+            // Add the "+End" button at the end
+            const endBtn = document.createElement('button');
+            endBtn.className = 'add-btn bg-green-600 hover:bg-green-700 text-white px-2 py-1 rounded text-xs transition-colors min-w-8';
+            endBtn.textContent = '+';
+            endBtn.title = 'Add keyframe after last';
+            endBtn.addEventListener('click', () => addKeyframeAtEnd());
+            keyframeButtons.appendChild(endBtn);
+        }
+
+        /**
+         * Sets up keyframe management buttons.
+         */
+        function setupKeyframeManagement() {
+            // Set up the delete, export, and import buttons
+            const deleteBtn = document.getElementById('deleteKeyframe');
+            const exportBtn = document.getElementById('exportPoses');
+            const importBtn = document.getElementById('importPoses');
+            
+            deleteBtn.addEventListener('click', () => deleteCurrentKeyframe());
+            exportBtn.addEventListener('click', () => exportPosesAsJSON());
+            importBtn.addEventListener('change', (event) => importPosesFromJSON(event));
+        }
+        
+        /**
+         * Interpolates between two normalized pose arrays.
+         * @param {number[]} pose1 - First normalized pose keypoints array
+         * @param {number[]} pose2 - Second normalized pose keypoints array  
+         * @param {number} progress - Interpolation progress (0-1)
+         * @returns {number[]} Interpolated normalized pose keypoints
+         */
+        function interpolatePoses(pose1, pose2, progress) {
+            const interpolatedKeyframe = [];
+            
+            for (let i = 0; i < pose1.length; i += 3) {
+                // Interpolate coordinates
+                const x1 = pose1[i];
+                const x2 = pose2[i];
+                const y1 = pose1[i + 1];
+                const y2 = pose2[i + 1];
+                const confidence = pose1[i + 2];
+                
+                const interpolatedX = x1 + (x2 - x1) * progress;
+                const interpolatedY = y1 + (y2 - y1) * progress;
+                
+                interpolatedKeyframe.push(interpolatedX, interpolatedY, confidence);
+            }
+            
+            return interpolatedKeyframe;
+        }
+        
+        /**
+         * Adds a new keyframe between two specific indices.
+         */
+        function addKeyframeBetweenIndex(index) {
+            if (isAnimating) return;
+            
+            // Get the two keyframes to interpolate between
+            const pose1 = normalizedPoses[index];
+            const pose2 = normalizedPoses[index + 1];
+            
+            // Create interpolated pose (50% between the two)
+            const interpolatedPose = interpolatePoses(pose1, pose2, 0.5);
+            
+            // Insert at the correct position
+            normalizedPoses.splice(index + 1, 0, interpolatedPose);
+            
+            // Update indices
+            totalKeyframes = normalizedPoses.length;
+            
+            // Adjust current keyframe if needed
+            if (currentKeyframe > index) {
+                currentKeyframe++;
+            }
+            nextKeyframe = (currentKeyframe + 1) % totalKeyframes;
+            
+            // Update UI
+            updateKeyframeButtons();
+            updateKeyframeIndicator();
+            
+            // Redraw
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawStickFigure(ctx, normalizedPoses[currentKeyframe]);
+        }
+
+        /**
+         * Adds a new keyframe at the start (duplicates first keyframe).
+         */
+        function addKeyframeAtStart() {
+            if (isAnimating) return;
+            
+            // Duplicate the first keyframe
+            const firstKeyframe = [...normalizedPoses[0]];
+            normalizedPoses.unshift(firstKeyframe);
+            
+            // Update indices
+            totalKeyframes = normalizedPoses.length;
+            currentKeyframe++; // Shift current selection
+            nextKeyframe = (currentKeyframe + 1) % totalKeyframes;
+            
+            // Update UI
+            updateKeyframeButtons();
+            updateKeyframeIndicator();
+            
+            // Redraw
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, getScaledKeypoints(currentKeyframe));
+        }
+
+        /**
+         * Adds a new keyframe between current and next (interpolated).
+         */
+        function addKeyframeBetween() {
+            if (isAnimating) return;
+            
+            // Create interpolated keyframe between current and next
+            const currentNormalized = normalizedPoses[currentKeyframe];
+            const nextNormalized = normalizedPoses[nextKeyframe];
+            const interpolatedKeyframe = [];
+            
+            for (let i = 0; i < currentNormalized.length; i += 3) {
+                // Interpolate at 50% between current and next
+                const x1 = currentNormalized[i];
+                const x2 = nextNormalized[i];
+                const y1 = currentNormalized[i + 1];
+                const y2 = nextNormalized[i + 1];
+                const confidence = currentNormalized[i + 2];
+                
+                const interpolatedX = x1 + (x2 - x1) * 0.5;
+                const interpolatedY = y1 + (y2 - y1) * 0.5;
+                
+                interpolatedKeyframe.push(interpolatedX, interpolatedY, confidence);
+            }
+            
+            // Insert the new keyframe after current
+            normalizedPoses.splice(currentKeyframe + 1, 0, interpolatedKeyframe);
+            
+            // Update indices
+            totalKeyframes = normalizedPoses.length;
+            nextKeyframe = (currentKeyframe + 1) % totalKeyframes;
+            
+            // Update UI
+            updateKeyframeButtons();
+            updateKeyframeIndicator();
+            
+            // Redraw
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, getScaledKeypoints(currentKeyframe));
+        }
+
+        /**
+         * Adds a new keyframe at the end (duplicates last keyframe).
+         */
+        function addKeyframeAtEnd() {
+            if (isAnimating) return;
+            
+            // Duplicate the last keyframe
+            const lastKeyframe = [...normalizedPoses[normalizedPoses.length - 1]];
+            normalizedPoses.push(lastKeyframe);
+            
+            // Update indices
+            totalKeyframes = normalizedPoses.length;
+            nextKeyframe = (currentKeyframe + 1) % totalKeyframes;
+            
+            // Update UI
+            updateKeyframeButtons();
+            updateKeyframeIndicator();
+            
+            // Redraw
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, getScaledKeypoints(currentKeyframe));
+        }
+
+        /**
+         * Deletes the current keyframe (if more than 2 keyframes exist).
+         */
+        function deleteCurrentKeyframe() {
+            if (isAnimating || totalKeyframes <= 2) return; // Keep minimum 2 keyframes
+            
+            // Remove current keyframe
+            normalizedPoses.splice(currentKeyframe, 1);
+            
+            // Update indices
+            totalKeyframes = normalizedPoses.length;
+            
+            // Adjust current keyframe if we deleted the last one
+            if (currentKeyframe >= totalKeyframes) {
+                currentKeyframe = totalKeyframes - 1;
+            }
+            nextKeyframe = (currentKeyframe + 1) % totalKeyframes;
+            
+            // Update UI
+            updateKeyframeButtons();
+            updateKeyframeIndicator();
+            
+            // Redraw
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, getScaledKeypoints(currentKeyframe));
+        }
+
+        /**
+         * Exports the current poses as JSON data.
+         */
+        function exportPosesAsJSON() {
+            // Convert normalized poses back to original format
+            const exportData = [];
+            
+            for (let i = 0; i < normalizedPoses.length; i++) {
+                const normalizedPose = normalizedPoses[i];
+                const scaledKeypoints = [];
+                
+                // Convert normalized coordinates back to original canvas scale
+                for (let j = 0; j < normalizedPose.length; j += 3) {
+                    const x = normalizedPose[j] * originalCanvasWidth;
+                    const y = normalizedPose[j + 1] * originalCanvasHeight;
+                    const confidence = normalizedPose[j + 2];
+                    
+                    scaledKeypoints.push(x, y, confidence);
+                }
+                
+                // Create pose data in original OpenPose format
+                const poseData = {
+                    "people": [{
+                        "pose_keypoints_2d": scaledKeypoints
+                    }],
+                    "canvas_width": originalCanvasWidth,
+                    "canvas_height": originalCanvasHeight
+                };
+                
+                exportData.push(poseData);
+            }
+            
+            // Create JSON string with nice formatting
+            const jsonString = JSON.stringify(exportData, null, 2);
+            
+            // Create and download the file
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `openpose_animation_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            // Also log to console for debugging
+            console.log('Exported poses:', exportData);
+        }
+
+        /**
+         * Imports poses from a JSON file.
+         * @param {Event} event - The file input change event
+         */
+        function importPosesFromJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validate the imported data
+                    if (!Array.isArray(importedData) || importedData.length === 0) {
+                        alert('Invalid JSON format: Expected an array of poses');
+                        return;
+                    }
+
+                    // Check if first pose has the expected structure
+                    const firstPose = importedData[0];
+                    if (!firstPose.people || !firstPose.people[0] || !firstPose.people[0].pose_keypoints_2d) {
+                        alert('Invalid pose format: Expected OpenPose JSON structure');
+                        return;
+                    }
+
+                    // Stop any current animation
+                    stopAnimation();
+
+                    // Update original canvas dimensions if provided
+                    if (firstPose.canvas_width && firstPose.canvas_height) {
+                        // Note: We keep using the normalized system, so we just need these for reference
+                        console.log(`Imported poses with original canvas: ${firstPose.canvas_width}x${firstPose.canvas_height}`);
+                    }
+
+                    // Convert imported poses to normalized format
+                    const newNormalizedPoses = [];
+                    for (let i = 0; i < importedData.length; i++) {
+                        const poseData = importedData[i];
+                        const keypoints = poseData.people[0].pose_keypoints_2d;
+                        
+                        // Get canvas dimensions for this pose (use from data or fall back to original)
+                        const canvasWidth = poseData.canvas_width || originalCanvasWidth;
+                        const canvasHeight = poseData.canvas_height || originalCanvasHeight;
+                        
+                        // Normalize the keypoints
+                        const normalizedKeypoints = [];
+                        for (let j = 0; j < keypoints.length; j += 3) {
+                            const x = keypoints[j] / canvasWidth;
+                            const y = keypoints[j + 1] / canvasHeight;
+                            const confidence = keypoints[j + 2];
+                            
+                            normalizedKeypoints.push(x, y, confidence);
+                        }
+                        
+                        newNormalizedPoses.push(normalizedKeypoints);
+                    }
+
+                    // Replace current poses
+                    normalizedPoses = newNormalizedPoses;
+                    totalKeyframes = normalizedPoses.length;
+                    currentKeyframe = 0;
+                    nextKeyframe = 1;
+
+                    // Update UI
+                    updateKeyframeButtons();
+                    updateKeyframeIndicator();
+
+                    // Redraw canvas
+                    const canvas = document.getElementById('poseCanvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    drawPose(ctx, getScaledKeypoints(currentKeyframe));
+
+                    console.log(`Successfully imported ${totalKeyframes} poses`);
+                    
+                    // Reset the file input so the same file can be loaded again
+                    event.target.value = '';
+
+                } catch (error) {
+                    alert('Error parsing JSON file: ' + error.message);
+                    console.error('Import error:', error);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        /**
+         * Jumps to a specific keyframe.
+         * @param {number} frameIndex - The keyframe index to jump to.
+         */
+        function jumpToKeyframe(frameIndex) {
+            if (frameIndex < 0 || frameIndex >= totalKeyframes) return;
+            
+            stopAnimation();
+            currentKeyframe = frameIndex;
+            nextKeyframe = (frameIndex + 1) % totalKeyframes;
+            
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, getScaledKeypoints(frameIndex));
+            updateKeyframeIndicator();
+            
+            // Update seek slider
+            const progress = frameIndex / totalKeyframes;
+            updateSeekDisplay(progress);
+            
+            const playBtn = document.getElementById('playBtn');
+            playBtn.textContent = '▶️ Play';
+        }
+
+        /**
+         * Interpolates between two sets of keypoints based on a progress value.
+         * @param {number[]} keypoints1 - The starting keypoints array.
+         * @param {number[]} keypoints2 - The ending keypoints array.
+         * @param {number} progress - A value between 0 and 1 representing animation progress.
+         * @returns {number[]} The interpolated keypoints array.
+         */
+        function interpolateKeypoints(keypoints1, keypoints2, progress) {
+            const interpolated = [];
+            
+            for (let i = 0; i < keypoints1.length; i += 3) {
+                // Interpolate x coordinate
+                const x1 = keypoints1[i];
+                const x2 = keypoints2[i];
+                const x = x1 + (x2 - x1) * progress;
+                
+                // Interpolate y coordinate
+                const y1 = keypoints1[i + 1];
+                const y2 = keypoints2[i + 1];
+                const y = y1 + (y2 - y1) * progress;
+                
+                // Keep confidence as is (could also interpolate if needed)
+                const confidence = keypoints1[i + 2];
+                
+                interpolated.push(x, y, confidence);
+            }
+            
+            return interpolated;
+        }
+
+        // --- EASING FUNCTIONS LIBRARY ---
+        
+        const easingFunctions = {
+            linear: (t) => t,
+            
+            easeIn: (t) => t * t,
+            easeOut: (t) => t * (2 - t),
+            easeInOut: (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t,
+            
+            easeInCubic: (t) => t * t * t,
+            easeOutCubic: (t) => (--t) * t * t + 1,
+            easeInOutCubic: (t) => t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1,
+            
+            easeInQuart: (t) => t * t * t * t,
+            easeOutQuart: (t) => 1 - (--t) * t * t * t,
+            easeInOutQuart: (t) => t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t,
+            
+            easeInBack: (t) => {
+                const c1 = 1.70158;
+                const c3 = c1 + 1;
+                return c3 * t * t * t - c1 * t * t;
+            },
+            easeOutBack: (t) => {
+                const c1 = 1.70158;
+                const c3 = c1 + 1;
+                return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+            },
+            easeInOutBack: (t) => {
+                const c1 = 1.70158;
+                const c2 = c1 * 1.525;
+                return t < 0.5
+                    ? (Math.pow(2 * t, 2) * ((c2 + 1) * 2 * t - c2)) / 2
+                    : (Math.pow(2 * t - 2, 2) * ((c2 + 1) * (t * 2 - 2) + c2) + 2) / 2;
+            },
+            
+            easeInBounce: (t) => 1 - easingFunctions.easeOutBounce(1 - t),
+            easeOutBounce: (t) => {
+                const n1 = 7.5625;
+                const d1 = 2.75;
+                if (t < 1 / d1) {
+                    return n1 * t * t;
+                } else if (t < 2 / d1) {
+                    return n1 * (t -= 1.5 / d1) * t + 0.75;
+                } else if (t < 2.5 / d1) {
+                    return n1 * (t -= 2.25 / d1) * t + 0.9375;
+                } else {
+                    return n1 * (t -= 2.625 / d1) * t + 0.984375;
+                }
+            },
+            easeInOutBounce: (t) => t < 0.5 
+                ? (1 - easingFunctions.easeOutBounce(1 - 2 * t)) / 2
+                : (1 + easingFunctions.easeOutBounce(2 * t - 1)) / 2
+        };
+
+        // Current selected easing function
+        let currentEasing = 'easeInOut';
+
+        // Easing descriptions for UI
+        const easingDescriptions = {
+            linear: 'Linear: Constant speed throughout',
+            easeIn: 'Ease In: Slow start, fast end',
+            easeOut: 'Ease Out: Fast start, slow end',
+            easeInOut: 'Ease In-Out: Slow start, fast middle, slow end',
+            easeInCubic: 'Ease In Cubic: Very slow start, accelerating',
+            easeOutCubic: 'Ease Out Cubic: Fast start, very slow end',
+            easeInOutCubic: 'Ease In-Out Cubic: Smooth curve with strong acceleration',
+            easeInQuart: 'Ease In Quart: Extremely slow start',
+            easeOutQuart: 'Ease Out Quart: Extremely slow end',
+            easeInOutQuart: 'Ease In-Out Quart: Very smooth S-curve',
+            easeInBack: 'Ease In Back: Pulls back then accelerates forward',
+            easeOutBack: 'Ease Out Back: Overshoots then settles',
+            easeInOutBack: 'Ease In-Out Back: Pulls back, overshoots, settles',
+            easeInBounce: 'Ease In Bounce: Bouncy start',
+            easeOutBounce: 'Ease Out Bounce: Bouncy landing',
+            easeInOutBounce: 'Ease In-Out Bounce: Bouncy start and end'
+        };
+
+        /**
+         * Starts the animation between poses.
+         */
+        function startAnimation() {
+            if (isAnimating) return;
+            
+            isAnimating = true;
+            animationStartTime = performance.now();
+            
+            const playBtn = document.getElementById('playBtn');
+            if (playBtn) {
+                playBtn.textContent = '⏸️ Pause';
+            }
+            
+            updateDragInfo();
+            animate();
+        }
+
+        /**
+         * Stops the current animation.
+         */
+        function stopAnimation() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+            updateDragInfo();
+        }
+
+        /**
+         * Main animation loop using requestAnimationFrame for keyframe animation.
+         */
+        function animate() {
+            if (!isAnimating) return;
+            
+            const canvas = document.getElementById('poseCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            const currentTime = performance.now();
+            let elapsed = currentTime - animationStartTime;
+            
+            // Calculate progress (0 to 1) for current keyframe transition
+            let progress = elapsed / animationDuration;
+            
+            if (progress >= 1) {
+                // Move to next keyframe
+                progress = 1;
+                currentKeyframe = nextKeyframe;
+                nextKeyframe = (nextKeyframe + 1) % totalKeyframes;
+                
+                if (shouldLoop || nextKeyframe !== 0) {
+                    // Continue to next keyframe
+                    animationStartTime = currentTime;
+                    progress = 0;
+                } else {
+                    // Stop at the end if not looping
+                    stopAnimation();
+                    return;
+                }
+            }
+            
+            // Apply selected easing function
+            const easedProgress = easingFunctions[currentEasing](progress);
+            
+            // Get normalized keypoints for current and next keyframes
+            const normalizedKeypoints1 = normalizedPoses[currentKeyframe];
+            const normalizedKeypoints2 = normalizedPoses[nextKeyframe];
+            
+            // Interpolate and scale to current canvas size
+            const interpolatedKeypoints = interpolateNormalizedKeypoints(normalizedKeypoints1, normalizedKeypoints2, easedProgress);
+            
+            // Clear canvas and draw the interpolated pose
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPose(ctx, interpolatedKeypoints);
+            
+            // Update keyframe indicator if it exists
+            updateKeyframeIndicator();
+            
+            // Update seek slider during animation
+            const totalDuration = animationDuration * totalKeyframes;
+            const overallElapsed = (currentKeyframe * animationDuration) + (progress * animationDuration);
+            const overallProgress = overallElapsed / totalDuration;
+            updateSeekDisplay(overallProgress);
+            
+            // Continue animation
+            animationId = requestAnimationFrame(animate);
+        }
+
+        /**
+         * Updates the keyframe indicator in the UI.
+         */
+        function updateKeyframeIndicator() {
+            const keyframeInfo = document.getElementById('keyframeInfo');
+            if (keyframeInfo) {
+                keyframeInfo.textContent = `Frame ${currentKeyframe + 1} → ${nextKeyframe + 1}`;
+            }
+            
+            // Update keyframe buttons if they exist
+            const keyframeButtons = document.querySelectorAll('.keyframe-btn');
+            keyframeButtons.forEach((btn, index) => {
+                if (index === currentKeyframe) {
+                    btn.classList.remove('bg-gray-600');
+                    btn.classList.add('active', 'bg-blue-600');
+                } else {
+                    btn.classList.remove('active', 'bg-blue-600');
+                    btn.classList.add('bg-gray-600');
+                }
+            });
+            
+            // Update delete button state
+            const deleteBtn = document.getElementById('deleteKeyframe');
+            if (deleteBtn) {
+                deleteBtn.disabled = totalKeyframes <= 2;
+                deleteBtn.classList.toggle('opacity-50', totalKeyframes <= 2);
+                deleteBtn.classList.toggle('cursor-not-allowed', totalKeyframes <= 2);
+            }
+            
+            // Update drag info
+            updateDragInfo();
+        }
+
+        /**
+         * Updates the drag information display.
+         */
+        function updateDragInfo() {
+            const dragInfo = document.getElementById('dragInfo');
+            if (dragInfo) {
+                if (isAnimating) {
+                    dragInfo.textContent = '▶️ Animation playing (stop to edit keypoints)';
+                    dragInfo.className = 'text-green-400';
+                } else if (isDragging) {
+                    const keypointName = KEYPOINT_NAMES[draggedKeypointIndex] || `Unknown(${draggedKeypointIndex})`;
+                    dragInfo.textContent = `🖱️ Dragging ${keypointName}`;
+                    dragInfo.className = 'text-yellow-400';
+                } else {
+                    dragInfo.textContent = '🎯 Drag keypoints when paused';
+                    dragInfo.className = 'text-cyan-400';
+                }
+            }
+        }
+
+        /**
+         * Draws the entire pose (keypoints and skeleton) on the canvas.
+         * @param {CanvasRenderingContext2D} ctx - The 2D rendering context of the canvas.
+         * @param {number[]} keypoints - The flat array of keypoints [x1, y1, c1, x2, y2, c2, ...].
+         */
+        function drawPose(ctx, keypoints) {
+            const points = parseKeypoints(keypoints);
+            drawSkeleton(ctx, points);
+            drawKeypoints(ctx, points);
+        }
+
+        /**
+         * Parses the flat keypoint array into a more usable array of objects.
+         * @param {number[]} keypoints - The flat array of keypoints.
+         * @returns {Array<{x: number, y: number, confidence: number}>} An array of keypoint objects.
+         */
+        function parseKeypoints(keypoints) {
+            const points = [];
+            for (let i = 0; i < keypoints.length; i += 3) {
+                points.push({
+                    x: keypoints[i],
+                    y: keypoints[i + 1],
+                    confidence: keypoints[i + 2]
+                });
+            }
+            return points;
+        }
+
+        /**
+         * Draws circles for each detected keypoint with color-coding based on body part.
+         * @param {CanvasRenderingContext2D} ctx - The canvas context.
+         * @param {Array<{x: number, y: number, confidence: number}>} points - The parsed keypoint objects.
+         */
+        function drawKeypoints(ctx, points) {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.lineWidth = 2;
+
+            points.forEach((point, index) => {
+                // Only draw if the confidence is above a threshold
+                if (point.confidence > 0.1) {
+                    // Get color for this keypoint
+                    const color = keypointColors[index] || limbColors.keypoints.default;
+                    ctx.fillStyle = color;
+                    
+                    // Highlight if this is the keypoint being dragged
+                    const isBeingDragged = isDragging && draggedKeypointIndex === index;
+                    const radius = isBeingDragged ? 8 : 6;
+                    
+                    if (isBeingDragged) {
+                        // Add a bright outline for the dragged keypoint
+                        ctx.strokeStyle = '#ffffff';
+                        ctx.lineWidth = 3;
+                    } else {
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                        ctx.lineWidth = 2;
+                    }
+                    
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            });
+        }
+
+        /**
+         * Draws lines between connected keypoints to form the skeleton with color-coded limbs.
+         * @param {CanvasRenderingContext2D} ctx - The canvas context.
+         * @param {Array<{x: number, y: number, confidence: number}>} points - The parsed keypoint objects.
+         */
+        function drawSkeleton(ctx, points) {
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+
+            skeletonConnections.forEach(pair => {
+                const startPoint = points[pair[0]];
+                const endPoint = points[pair[1]];
+
+                // Only draw the line if both connected points are detected with sufficient confidence
+                if (startPoint && endPoint && startPoint.confidence > 0.1 && endPoint.confidence > 0.1) {
+                    // Get color for this connection
+                    const connectionKey = `${pair[0]}-${pair[1]}`;
+                    const color = connectionColors[connectionKey] || limbColors.torso;
+                    
+                    ctx.strokeStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(startPoint.x, startPoint.y);
+                    ctx.lineTo(endPoint.x, endPoint.y);
+                    ctx.stroke();
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
